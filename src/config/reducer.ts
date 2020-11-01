@@ -1,6 +1,6 @@
-import { DungeonItems, DUNGEONS, ReducerState, ReducerAction } from "./types";
+import { DungeonItems, ReducerState, ReducerAction } from "./types";
 
-const defaultItems: DungeonItems = {
+const defaultItems: Omit<DungeonItems, 'entrances'> = {
     map: false,
     compass: false,
     bigKey: 'notFound',
@@ -13,13 +13,24 @@ const defaultItems: DungeonItems = {
         found: 0,
         total: null,
         used: 0
-    }
+    },
 }
 
-export const init: ReducerState = DUNGEONS.reduce((acc, dungeon) => ({
-    ...acc,
-    [dungeon]: defaultItems
-}), {}) as ReducerState
+export const init: ReducerState = {
+    'HC': { ...defaultItems, entrances: { found: 0, max: 4 } },
+    'EP': { ...defaultItems, entrances: { found: 0, max: 1 } },
+    'DP': { ...defaultItems, entrances: { found: 0, max: 4 } },
+    'TOH': { ...defaultItems, entrances: { found: 0, max: 1 } },
+    'AT': { ...defaultItems, entrances: { found: 0, max: 1 } },
+    'POD': { ...defaultItems, entrances: { found: 0, max: 1 } },
+    'SP': { ...defaultItems, entrances: { found: 0, max: 1 } },
+    'SW': { ...defaultItems, entrances: { found: 0, max: 4 } },
+    'TT': { ...defaultItems, entrances: { found: 0, max: 1 } },
+    'IP': { ...defaultItems, entrances: { found: 0, max: 1 } },
+    'MM': { ...defaultItems, entrances: { found: 0, max: 1 } },
+    'TR': { ...defaultItems, entrances: { found: 0, max: 4 } },
+    'GT': { ...defaultItems, entrances: { found: 0, max: 1 } },
+}
 
 const computeNewValue = (action: 'plus' | 'minus', value: number) => {
     if (action === 'plus') return value + 1
@@ -87,8 +98,17 @@ export default (state: ReducerState, action: ReducerAction) => {
                 }
             }
         }
-        case 'reset': {
-            return init
+        case 'entrance': {
+            return {
+                ...state,
+                [action.dungeon]: {
+                    ...state[action.dungeon],
+                    entrances: {
+                        ...state[action.dungeon].entrances,
+                        found: computeNewValue(action.value, state[action.dungeon].entrances.found)
+                    }
+                }
+            }
         }
         default:
             return state

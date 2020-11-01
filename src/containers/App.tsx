@@ -29,6 +29,8 @@ const App: React.FC<{}> = () => {
   const removeSmallKey = React.useCallback(actions.removeSmallKey(dispatch), [])
   const addChest = React.useCallback(actions.addChest(dispatch), [])
   const removeChest = React.useCallback(actions.removeChest(dispatch), [])
+  const addEntrance = React.useCallback(actions.addEntrance(dispatch), [])
+  const removeEntrance = React.useCallback(actions.removeEntrance(dispatch), [])
 
   return <div className={classes.root}>
     <Header />
@@ -42,10 +44,12 @@ const App: React.FC<{}> = () => {
         addSmallKey,
         removeSmallKey,
         addChest,
-        removeChest
+        removeChest,
+        addEntrance,
+        removeEntrance
       }
     }}>
-      {DUNGEONS.map(dungeon => <Row dungeon={dungeon} />)}
+      {DUNGEONS.map((dungeon, index) => <Row key={index} dungeon={dungeon} stripped={index % 2 === 0} />)}
     </AppContext.Provider>
   </div>
 }

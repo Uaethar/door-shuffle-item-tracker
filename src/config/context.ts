@@ -12,6 +12,8 @@ export type AppContext = {
         removeSmallKey: (dungeon: Dungeon, subItem: 'found' | 'total' | 'used') => void,
         addChest: (dungeon: Dungeon, subItem: 'found' | 'total') => void,
         removeChest: (dungeon: Dungeon, subItem: 'found' | 'total') => void,
+        addEntrance: (dungeon: Dungeon) => void,
+        removeEntrance: (dungeon: Dungeon) => void,
     }
 }
 

@@ -41,6 +41,11 @@ const Header: React.FC<{}> = () => {
     </div>
     <div className={classes.headerCell}>
       <div>
+        E
+      </div>
+    </div>
+    <div className={classes.headerCell}>
+      <div>
         <img src={map} height={20} alt="map" />
       </div>
     </div>

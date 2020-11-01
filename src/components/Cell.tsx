@@ -11,7 +11,7 @@ const useStyles = createUseStyles({
         justifyContent: 'center',
         cursor: 'pointer',
         '&:hover': {
-            backgroundColor: '#AAA'
+            backgroundColor: 'rgba(0, 0, 0, 0.1)'
         }
     }
 }, { name: 'Cell' })

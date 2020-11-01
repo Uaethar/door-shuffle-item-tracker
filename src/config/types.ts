@@ -12,7 +12,11 @@ export type DungeonItems = {
     compass: boolean,
     bigKey: 'found' | 'notFound' | 'unavailable',
     smallKeys: DungeonSubItems,
-    chests: DungeonSubItems
+    chests: DungeonSubItems,
+    entrances: {
+        found: number,
+        max: number
+    }
 }
 
 export type ReducerState = Record<Dungeon, DungeonItems>
@@ -43,8 +47,13 @@ type ChestAction = BaseAction & {
     value: 'plus' | 'minus'
 }
 
+type EntranceAction = BaseAction & {
+    type: 'entrance',
+    value: 'plus' | 'minus'
+}
+
 type ResetAction = {
     type: 'reset'
 }
 
-export type ReducerAction = MapCompassAction | BigKeyAction | SmallKeyAction | ChestAction | ResetAction
+export type ReducerAction = MapCompassAction | BigKeyAction | SmallKeyAction | ChestAction | EntranceAction

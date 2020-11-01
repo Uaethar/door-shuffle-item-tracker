@@ -51,4 +51,15 @@ export const removeChest = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dung
     dungeon,
     subItem,
     value: 'minus'
-  })
+})
+
+export const addEntrance = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon) => dispatch({
+    type: 'entrance',
+    dungeon,
+    value: 'plus'
+})
+export const removeEntrance = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon) => dispatch({
+    type: 'entrance',
+    dungeon,
+    value: 'minus'
+})

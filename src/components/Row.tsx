@@ -13,8 +13,9 @@ const useStyles = createUseStyles({
         flexDirection: 'row',
         height: 24,
         borderBottom: '1px solid #000',
+        backgroundColor: ({ stripped }) => stripped ? '#E9E9E9' : '#FFF',
         '&:hover': {
-            backgroundColor: '#DDD'
+            backgroundColor: '#D0D0D0'
         }
     },
     cell: {
@@ -26,24 +27,37 @@ const useStyles = createUseStyles({
         justifyContent: 'center'
     },
     cellAllUsed: {
-        backgroundColor: '#FCC'
+        backgroundColor: 'rgba(255, 0, 0, 0.25)'
     },
     cellAllFound: {
-        backgroundColor: '#CFC'
+        backgroundColor: 'rgba(0, 255, 0, 0.25)'
     }
 }, { name: 'Row' })
 
 type Props = {
-    dungeon: Dungeon
+    dungeon: Dungeon,
+    stripped: boolean
 }
 
-const Row: React.FC<Props> = ({ dungeon }) => {
-    const { state: { [dungeon]: { map, compass, bigKey, smallKeys, chests } }, actions } = React.useContext(AppContext)
-    const classes = useStyles()
+const Row: React.FC<Props> = ({ dungeon, stripped }) => {
+    const { state: { [dungeon]: { map, compass, bigKey, smallKeys, chests, entrances } }, actions } = React.useContext(AppContext)
+    const classes = useStyles({ stripped })
 
     return <div className={classes.row}>
         <div className={classes.cell}>
             {dungeon}
+        </div>
+        <div className={classNames(classes.cell, { [classes.cellAllFound]: entrances.found === entrances.max })}>
+            <Cell
+                onLeftClick={() => {
+                    if (entrances.found < entrances.max) {
+                        actions.addEntrance(dungeon)
+                    }
+                }}
+                onRightClick={() => actions.removeEntrance(dungeon)}
+            >
+                {entrances.found}
+            </Cell>
         </div>
         <div className={classes.cell}>
             <Cell
