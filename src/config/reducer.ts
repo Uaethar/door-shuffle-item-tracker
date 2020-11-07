@@ -1,4 +1,4 @@
-import { DungeonItems, ReducerState, ReducerAction, sortLocking } from "./types";
+import { DungeonItems, ReducerState, ReducerAction, sortRequired } from "./types";
 
 const defaultItems: Omit<DungeonItems, 'entrances'> = {
     map: false,
@@ -14,7 +14,7 @@ const defaultItems: Omit<DungeonItems, 'entrances'> = {
         total: null,
         used: 0
     },
-    locking: []
+    required: []
 }
 
 export const init: ReducerState = {
@@ -111,12 +111,12 @@ export default (state: ReducerState, action: ReducerAction) => {
                 }
             }
         }
-        case 'locking': {
+        case 'required': {
             return {
                 ...state,
                 [action.dungeon]: {
                     ...state[action.dungeon],
-                    locking: action.value.sort(sortLocking)
+                    required: action.value.sort(sortRequired)
                 }
             }
         }

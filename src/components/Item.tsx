@@ -1,5 +1,5 @@
 import React from 'react'
-import { LockingItem } from '../config/types'
+import { RequiredItem } from '../config/types'
 import bombos from '../img/bombos.png'
 import boots from '../img/boots.png'
 import bow from '../img/bow.png'
@@ -13,7 +13,7 @@ import somaria from '../img/somaria.png'
 import torch from '../img/torch.png'
 
 type Props = {
-    item: LockingItem,
+    item: RequiredItem,
     height?: number
 }
 

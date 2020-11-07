@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dungeon, LockingItem, ReducerState } from './types'
+import { Dungeon, RequiredItem, ReducerState } from './types'
 
 export type AppContext = {
     state: ReducerState,
@@ -14,17 +14,17 @@ export type AppContext = {
         removeChest: (dungeon: Dungeon, subItem: 'found' | 'total') => void,
         addEntrance: (dungeon: Dungeon) => void,
         removeEntrance: (dungeon: Dungeon) => void,
-        setLocking: (dungeon: Dungeon, locking: Array<LockingItem>) => void
+        setRequired: (dungeon: Dungeon, required: Array<RequiredItem>) => void
     }
 }
 
 export const AppContext = React.createContext<AppContext>(null as any)
 
-export type LockingModalContext = {
+export type RequiredModalContext = {
     dungeon?: Dungeon,
     open: boolean,
     handleOpen: (dungeon: Dungeon) => void
     handleClose: VoidFunction
 }
 
-export const LockingModalContext = React.createContext<LockingModalContext>(null as any)
+export const RequiredModalContext = React.createContext<RequiredModalContext>(null as any)

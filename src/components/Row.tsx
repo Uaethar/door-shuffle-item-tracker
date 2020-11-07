@@ -1,12 +1,12 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { AppContext, LockingModalContext } from '../config/context'
+import { AppContext, RequiredModalContext } from '../config/context'
 import { Dungeon } from '../config/types'
 import Cell from './Cell'
 import check from '../img/check.png'
 import cross from '../img/cross.png'
 import classNames from 'classnames'
-import LockingItemList from './LockingItemList'
+import RequiredItemList from './RequiredItemList'
 
 const useStyles = createUseStyles({
     row: {
@@ -41,9 +41,10 @@ type Props = {
 }
 
 const Row: React.FC<Props> = ({ dungeon, stripped }) => {
-    const { state: { [dungeon]: { map, compass, bigKey, smallKeys, chests, entrances, locking } }, actions } = React.useContext(AppContext)
     const classes = useStyles({ stripped })
-    const { handleOpen } = React.useContext(LockingModalContext)
+
+    const { state: { [dungeon]: { map, compass, bigKey, smallKeys, chests, entrances, required } }, actions } = React.useContext(AppContext)
+    const { handleOpen } = React.useContext(RequiredModalContext)
 
     return <div className={classes.row}>
         <div className={classes.cell}>
@@ -135,7 +136,7 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
             </Cell>
         </div>
         <div className={classes.cell}>
-            <LockingItemList locking={locking} openLockingModal={() => handleOpen(dungeon)} />
+            <RequiredItemList required={required} openRequiredModal={() => handleOpen(dungeon)} />
         </div>
     </div>
 }

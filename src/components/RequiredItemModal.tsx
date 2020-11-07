@@ -1,6 +1,6 @@
 import React from 'react'
-import { AppContext, LockingModalContext } from '../config/context'
-import { LockingItem } from '../config/types'
+import { AppContext, RequiredModalContext } from '../config/context'
+import { RequiredItem } from '../config/types'
 import Modal from 'react-modal'
 import { createUseStyles } from 'react-jss'
 import Item from './Item'
@@ -56,28 +56,28 @@ const useStyles = createUseStyles({
         padding: 3,
         cursor: 'pointer'
     }
-}, { name: 'LockingItemModal' })
+}, { name: 'RequiredItemModal' })
 
 type Props = {}
 
-const LockingItemModal: React.FC<Props> = () => {
+const RequiredItemModal: React.FC<Props> = () => {
 
     const classes = useStyles()
 
-    const { dungeon, open, handleClose } = React.useContext(LockingModalContext)
+    const { dungeon, open, handleClose } = React.useContext(RequiredModalContext)
     const { state, actions } = React.useContext(AppContext)
 
-    const [selectedItems, setSelectedItems] = React.useState<Array<LockingItem>>([])
+    const [selectedItems, setSelectedItems] = React.useState<Array<RequiredItem>>([])
 
     React.useEffect(() => {
         if (typeof dungeon !== 'undefined') {
-            setSelectedItems(state[dungeon].locking)
+            setSelectedItems(state[dungeon].required)
         } else {
             setSelectedItems([])
         }
     }, [dungeon, state])
 
-    const toggleItemSelected = React.useCallback((selectedItem: LockingItem) => {
+    const toggleItemSelected = React.useCallback((selectedItem: RequiredItem) => {
         if (selectedItems.includes(selectedItem)) {
             setSelectedItems(selectedItems => selectedItems.filter(item => item !== selectedItem))
         } else if (selectedItems.length < 4) {
@@ -85,7 +85,7 @@ const LockingItemModal: React.FC<Props> = () => {
         }
     }, [setSelectedItems, selectedItems])
 
-    const renderItem = React.useCallback((item: LockingItem) => <div
+    const renderItem = React.useCallback((item: RequiredItem) => <div
         className={classNames(classes.item, { [classes.selected]: selectedItems.includes(item) })}
         onClick={() => toggleItemSelected(item)}
         onContextMenu={() => { }}
@@ -137,7 +137,7 @@ const LockingItemModal: React.FC<Props> = () => {
                 <button
                     className={classes.button}
                     onClick={() => {
-                        actions.setLocking(dungeon!, selectedItems)
+                        actions.setRequired(dungeon!, selectedItems)
                         handleClose()
                     }}
                 >
@@ -148,4 +148,4 @@ const LockingItemModal: React.FC<Props> = () => {
     </Modal>
 }
 
-export default LockingItemModal
+export default RequiredItemModal

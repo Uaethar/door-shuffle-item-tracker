@@ -4,9 +4,9 @@ import { Dungeon, DUNGEONS } from '../config/types'
 import Header from '../components/Header'
 import reducer, { init } from '../config/reducer';
 import * as actions from '../config/actions'
-import { AppContext, LockingModalContext } from '../config/context';
+import { AppContext, RequiredModalContext } from '../config/context';
 import Row from '../components/Row';
-import LockingItemModal from '../components/LockigItemModal';
+import RequiredItemModal from '../components/RequiredItemModal';
 
 const useStyles = createUseStyles({
   root: {
@@ -32,7 +32,7 @@ const App: React.FC<{}> = () => {
   const removeChest = React.useCallback(actions.removeChest(dispatch), [])
   const addEntrance = React.useCallback(actions.addEntrance(dispatch), [])
   const removeEntrance = React.useCallback(actions.removeEntrance(dispatch), [])
-  const setLocking = React.useCallback(actions.setLocking(dispatch), [])
+  const setRequired = React.useCallback(actions.setRequired(dispatch), [])
 
   const [openModale, setOpenModale] = React.useState(false)
   const [dungeon, setDungeon] = React.useState<Dungeon>()
@@ -52,10 +52,10 @@ const App: React.FC<{}> = () => {
         removeChest,
         addEntrance,
         removeEntrance,
-        setLocking
+        setRequired
       }
     }}>
-      <LockingModalContext.Provider value={{
+      <RequiredModalContext.Provider value={{
         dungeon: dungeon,
         open: openModale,
         handleOpen: (dungeon: Dungeon) => {
@@ -68,8 +68,8 @@ const App: React.FC<{}> = () => {
         }
       }}>
         {DUNGEONS.map((dungeon, index) => <Row key={index} dungeon={dungeon} stripped={index % 2 === 0} />)}
-        <LockingItemModal />
-      </LockingModalContext.Provider>
+        <RequiredItemModal />
+      </RequiredModalContext.Provider>
     </AppContext.Provider>
   </div>
 }

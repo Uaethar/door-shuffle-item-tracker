@@ -1,6 +1,6 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { LockingItem } from '../config/types'
+import { RequiredItem } from '../config/types'
 import Item from './Item'
 
 
@@ -25,22 +25,22 @@ const useStyles = createUseStyles({
         lineHeight: '10px',
         textAlign: 'center'
     }
-}, { name: 'LockingItemList' })
+}, { name: 'RequiredItemList' })
 
 type Props = {
-    locking: Array<LockingItem>,
-    openLockingModal: VoidFunction
+    required: Array<RequiredItem>,
+    openRequiredModal: VoidFunction
 }
 
-const LockingItemList: React.FC<Props> = ({ locking, openLockingModal }) => {
+const RequiredItemList: React.FC<Props> = ({ required, openRequiredModal }) => {
     const classes = useStyles()
 
     return <div
         className={classes.root}
-        onClick={() => openLockingModal()}
+        onClick={() => openRequiredModal()}
         onContextMenu={(event) => event.preventDefault()}
     >
-        {locking.slice(0, 4).map(item =>
+        {required.slice(0, 4).map(item =>
             <div className={classes.item}>
                 <Item item={item} />
             </div>
@@ -48,4 +48,4 @@ const LockingItemList: React.FC<Props> = ({ locking, openLockingModal }) => {
     </div>
 }
 
-export default LockingItemList
+export default RequiredItemList
