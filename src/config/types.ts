@@ -1,6 +1,25 @@
 export const DUNGEONS = ['HC', 'EP', 'DP', 'TOH', 'AT', 'POD', 'SP', 'SW', 'TT', 'IP', 'MM', 'TR', 'GT'] as const
 export type Dungeon = typeof DUNGEONS[number]
 
+export const LOCKING_ITEMS = [
+    'lantern',
+    'firerod',
+    'bombos',
+    'torch',
+    'bow',
+    'hookshot',
+    'hammer',
+    'somaria',
+    'glove',
+    'flippers', 
+    'boots',
+    'dam',
+    'attic'
+] as const
+export type LockingItem = typeof LOCKING_ITEMS[number]
+
+export const sortLocking = (a: LockingItem, b: LockingItem) => LOCKING_ITEMS.indexOf(a) - LOCKING_ITEMS.indexOf(b)
+
 export type DungeonSubItems = {
     found: number,
     total: number | null,
@@ -16,7 +35,8 @@ export type DungeonItems = {
     entrances: {
         found: number,
         max: number
-    }
+    },
+    locking: Array<LockingItem>
 }
 
 export type ReducerState = Record<Dungeon, DungeonItems>
@@ -52,8 +72,13 @@ type EntranceAction = BaseAction & {
     value: 'plus' | 'minus'
 }
 
+type LockingAction = BaseAction & {
+    type: 'locking',
+    value: Array<LockingItem>
+}
+
 type ResetAction = {
     type: 'reset'
 }
 
-export type ReducerAction = MapCompassAction | BigKeyAction | SmallKeyAction | ChestAction | EntranceAction
+export type ReducerAction = MapCompassAction | BigKeyAction | SmallKeyAction | ChestAction | EntranceAction | LockingAction

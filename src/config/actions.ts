@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import { Dungeon, ReducerAction } from "./types";
+import { Dungeon, LockingItem, ReducerAction } from "./types";
 
 export const toggleMap = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon) => dispatch({
     type: 'toggle',
@@ -62,4 +62,10 @@ export const removeEntrance = (dispatch: Dispatch<ReducerAction>) => (dungeon: D
     type: 'entrance',
     dungeon,
     value: 'minus'
+})
+
+export const setLocking = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon, locking: Array<LockingItem>) => dispatch({
+    type: 'locking',
+    dungeon,
+    value: locking
 })

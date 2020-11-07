@@ -7,6 +7,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/classnames": "^2.2.11",
+    "@types/react-modal": "^3.10.6",
     "@types/webpack-env": "^1.15.3",
     "classnames": "^2.2.6",
     "react": "^16.13.1",
@@ -15,6 +16,7 @@
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.13.0",
     "react-jss": "^10.4.0",
+    "react-modal": "^3.11.2",
     "react-scripts": "3.4.3"
   },
   "scripts": {

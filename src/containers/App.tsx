@@ -1,11 +1,12 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
-import { DUNGEONS } from '../config/types'
+import { Dungeon, DUNGEONS } from '../config/types'
 import Header from '../components/Header'
 import reducer, { init } from '../config/reducer';
 import * as actions from '../config/actions'
-import { AppContext } from '../config/context';
+import { AppContext, LockingModalContext } from '../config/context';
 import Row from '../components/Row';
+import LockingItemModal from '../components/LockigItemModal';
 
 const useStyles = createUseStyles({
   root: {
@@ -31,6 +32,10 @@ const App: React.FC<{}> = () => {
   const removeChest = React.useCallback(actions.removeChest(dispatch), [])
   const addEntrance = React.useCallback(actions.addEntrance(dispatch), [])
   const removeEntrance = React.useCallback(actions.removeEntrance(dispatch), [])
+  const setLocking = React.useCallback(actions.setLocking(dispatch), [])
+
+  const [openModale, setOpenModale] = React.useState(false)
+  const [dungeon, setDungeon] = React.useState<Dungeon>()
 
   return <div className={classes.root}>
     <Header />
@@ -46,10 +51,25 @@ const App: React.FC<{}> = () => {
         addChest,
         removeChest,
         addEntrance,
-        removeEntrance
+        removeEntrance,
+        setLocking
       }
     }}>
-      {DUNGEONS.map((dungeon, index) => <Row key={index} dungeon={dungeon} stripped={index % 2 === 0} />)}
+      <LockingModalContext.Provider value={{
+        dungeon: dungeon,
+        open: openModale,
+        handleOpen: (dungeon: Dungeon) => {
+          setDungeon(dungeon)
+          setOpenModale(true)
+        },
+        handleClose: () => {
+          setDungeon(undefined)
+          setOpenModale(false)
+        }
+      }}>
+        {DUNGEONS.map((dungeon, index) => <Row key={index} dungeon={dungeon} stripped={index % 2 === 0} />)}
+        <LockingItemModal />
+      </LockingModalContext.Provider>
     </AppContext.Provider>
   </div>
 }

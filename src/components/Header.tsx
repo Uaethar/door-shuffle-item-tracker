@@ -5,38 +5,43 @@ import compass from '../img/compass.png'
 import smallKey from '../img/smallKey.png'
 import bigKey from '../img/bigKey.png'
 import chest from '../img/chest.png'
+import classNames from 'classnames'
 
 const useStyles = createUseStyles({
-    header: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 49,
-        borderBottom: '2px solid #000'
-      },
-      headerCell: {
-        height: '100%',
-        minWidth: 24,
-        borderRight: '1px solid #000',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center'
-      },
-      headerSubCellGroup: {
-        display: 'flex',
-        flexDirection: 'row',
-      },
-      headerSubCell: {
-        width: 24,
-        textAlign: 'center',
-        fontSize: 16,
-      },
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 49,
+    borderBottom: '2px solid #000'
+  },
+  headerCell: {
+    height: '100%',
+    minWidth: 24,
+    borderRight: '1px solid #000',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerSubCellGroup: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  headerSubCell: {
+    width: 24,
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  headerLocked: {
+    width: 96,
+    textAlign: 'center'
+  }
 }, { name: 'Header' })
 
 const Header: React.FC<{}> = () => {
-    const classes = useStyles()
-    return <div className={classes.header}>
+  const classes = useStyles()
+  return <div className={classes.header}>
     <div className={classes.headerCell}>
     </div>
     <div className={classes.headerCell}>
@@ -73,6 +78,9 @@ const Header: React.FC<{}> = () => {
         <div className={classes.headerSubCell}>F</div>
         <div className={classes.headerSubCell}>T</div>
       </div>
+    </div>
+    <div className={classNames(classes.headerCell, classes.headerLocked)}>
+      Required<br />Contains
     </div>
   </div>
 }

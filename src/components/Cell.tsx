@@ -25,7 +25,7 @@ const Cell: React.FC<Props> = ({ onLeftClick, onRightClick = () => { }, children
     const classes = useStyles()
 
     return <div
-    className={classes.root}
+        className={classes.root}
         onClick={onLeftClick}
         onContextMenu={(event) => {
             event.preventDefault()
