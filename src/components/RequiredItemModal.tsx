@@ -115,6 +115,7 @@ const RequiredItemModal: React.FC<Props> = () => {
                     {renderItem("glove")}
                     {renderItem("flippers")}
                     {renderItem("boots")}
+                    {renderItem("bigKey")}
                 </div>
                 <div className={classes.row}>
                     {renderItem("dam")}

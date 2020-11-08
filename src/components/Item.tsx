@@ -11,6 +11,7 @@ import hookshot from '../img/hookshot.png'
 import lantern from '../img/lantern.png'
 import somaria from '../img/somaria.png'
 import torch from '../img/torch.png'
+import bigKey from '../img/bigKey.png'
 
 type Props = {
     item: RequiredItem,
@@ -31,6 +32,7 @@ const Item: React.FC<Props> = ({ item, height = 20 }) => {
         case 'lantern': return <img src={lantern} alt="lantern" height={height} />
         case 'somaria': return <img src={somaria} alt="somaria" height={height} />
         case 'torch': return <img src={torch} alt="torch" height={height} />
+        case 'bigKey': return <img src={bigKey} alt="bigKey" height={height} />
         case 'dam': return <span>DAM</span>
         case 'attic': return <span>ATT<br />IC</span>
         default: return null

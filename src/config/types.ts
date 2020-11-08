@@ -11,8 +11,9 @@ export const REQUIRED_ITEMS = [
     'hammer',
     'somaria',
     'glove',
-    'flippers', 
+    'flippers',
     'boots',
+    'bigKey',
     'dam',
     'attic'
 ] as const
