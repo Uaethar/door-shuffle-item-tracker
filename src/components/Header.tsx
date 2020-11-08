@@ -18,11 +18,13 @@ const useStyles = createUseStyles({
   headerCell: {
     height: '100%',
     minWidth: 24,
-    borderRight: '1px solid #000',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    "&:not(:last-child)": {
+      borderRight: '1px solid #000',
+    }
   },
   headerSubCellGroup: {
     display: 'flex',

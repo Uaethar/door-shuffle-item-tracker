@@ -13,19 +13,24 @@ const useStyles = createUseStyles({
         display: 'flex',
         flexDirection: 'row',
         height: 24,
-        borderBottom: '1px solid #000',
         backgroundColor: ({ stripped }) => stripped ? '#E9E9E9' : '#FFF',
         '&:hover': {
             backgroundColor: '#D0D0D0'
+        },
+        "&:not(:last-child)": {
+            borderBottom: '1px solid #000'
         }
     },
     cell: {
         minWidth: 24,
-        borderRight: '1px solid #000',
         alignText: 'center',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        "&:not(:last-child)": {
+            borderRight: '1px solid #000'
+        
+        }
     },
     cellAllUsed: {
         backgroundColor: 'rgba(255, 0, 0, 0.25)'
