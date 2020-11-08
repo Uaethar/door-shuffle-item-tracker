@@ -5,15 +5,16 @@ import Modal from 'react-modal'
 import { createUseStyles } from 'react-jss'
 import Item from './Item'
 import classNames from 'classnames'
-import check from '../img/check.png'
-import cross from '../img/cross.png'
+import check from '../img/check.svg'
+import cross from '../img/cross.svg'
 
 const useStyles = createUseStyles({
     root: {
         display: 'flex',
         flexDirection: 'column',
         fontSize: 12,
-        fontFamily: 'monospace'
+        fontFamily: 'monospace',
+        color: '#fff'
     },
     row: {
         display: 'flex',
@@ -32,17 +33,26 @@ const useStyles = createUseStyles({
         textAlign: 'center'
     },
     selected: {
-        backgroundColor: '#6FF9DD'
+        backgroundColor: 'rgba(111,249,221, 0.7)'
     },
     modal: {
         position: 'absolute',
         top: 86,
         left: 66,
         width: 200,
-        backgroundColor: '#fff',
-        border: '1px solid rgb(204, 204, 204)',
+        backgroundColor: '#404040',
+        border: '1px solid #606060',
         outline: 'none',
+        borderRadius: 5,
         padding: 5
+    },
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(35,35,35,0.75)'
     },
     actions: {
         display: 'flex',
@@ -54,7 +64,11 @@ const useStyles = createUseStyles({
         height: 26,
         margin: 2,
         padding: 3,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        backgroundColor: '#606060',
+        color: '#fff',
+        outline: 'none',
+        tabIndex: -1
     }
 }, { name: 'RequiredItemModal' })
 
@@ -96,6 +110,7 @@ const RequiredItemModal: React.FC<Props> = () => {
     return <Modal
         isOpen={open}
         className={classes.modal}
+        overlayClassName={classes.overlay}
     >
         {dungeon && <>
             <div className={classes.root}>

@@ -3,8 +3,8 @@ import { createUseStyles } from 'react-jss'
 import { AppContext, RequiredModalContext } from '../config/context'
 import { Dungeon } from '../config/types'
 import Cell from './Cell'
-import check from '../img/check.png'
-import cross from '../img/cross.png'
+import check from '../img/check.svg'
+import cross from '../img/cross.svg'
 import classNames from 'classnames'
 import RequiredItemList from './RequiredItemList'
 
@@ -13,12 +13,12 @@ const useStyles = createUseStyles({
         display: 'flex',
         flexDirection: 'row',
         height: 24,
-        backgroundColor: ({ stripped }) => stripped ? '#E9E9E9' : '#FFF',
+        backgroundColor: ({ stripped }) => stripped ? '#505050' : '#404040',
         '&:hover': {
-            backgroundColor: '#D0D0D0'
+            backgroundColor: '#606060'
         },
         "&:not(:last-child)": {
-            borderBottom: '1px solid #000'
+            borderBottom: '1px solid #fff'
         }
     },
     cell: {
@@ -28,15 +28,17 @@ const useStyles = createUseStyles({
         alignItems: 'center',
         justifyContent: 'center',
         "&:not(:last-child)": {
-            borderRight: '1px solid #000'
+            borderRight: '1px solid #fff'
         
         }
     },
     cellAllUsed: {
-        backgroundColor: 'rgba(255, 0, 0, 0.25)'
+        backgroundColor: 'rgba(200, 0, 0, 0.25)'
+        // color: 'rgba(250, 50, 50)'
     },
     cellAllFound: {
-        backgroundColor: 'rgba(0, 255, 0, 0.25)'
+        backgroundColor: 'rgba(0, 200, 0, 0.25)'
+        // color: 'rgba(50, 200, 50)'
     }
 }, { name: 'Row' })
 

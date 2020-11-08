@@ -13,7 +13,7 @@ const useStyles = createUseStyles({
     flexDirection: 'row',
     alignItems: 'center',
     height: 49,
-    borderBottom: '2px solid #000'
+    borderBottom: '2px solid #fff'
   },
   headerCell: {
     height: '100%',
@@ -23,7 +23,7 @@ const useStyles = createUseStyles({
     alignItems: 'center',
     justifyContent: 'center',
     "&:not(:last-child)": {
-      borderRight: '1px solid #000',
+      borderRight: '1px solid #fff',
     }
   },
   headerSubCellGroup: {

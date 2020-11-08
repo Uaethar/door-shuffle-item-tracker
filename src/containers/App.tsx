@@ -14,7 +14,9 @@ const useStyles = createUseStyles({
     flexDirection: 'column',
     fontSize: 12,
     fontFamily: 'monospace',
-    width: 'fit-content'
+    width: 'fit-content',
+    backgroundColor: '#404040',
+    color: '#FFF',
   }
 })
 
