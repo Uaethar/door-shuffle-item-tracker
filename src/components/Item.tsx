@@ -12,6 +12,12 @@ import lantern from '../img/lantern.png'
 import somaria from '../img/somaria.png'
 import torch from '../img/torch.png'
 import bigKey from '../img/bigKey.png'
+import smallKey from '../img/smallKey.png'
+import sword from '../img/sword.png'
+import bombs from '../img/bombs.png'
+import blueSwitch from '../img/blueSwitch.png'
+import redSwitch from '../img/redSwitch.png'
+import cross from '../img/cross.svg'
 
 type Props = {
     item: RequiredItem,
@@ -21,18 +27,24 @@ type Props = {
 
 const Item: React.FC<Props> = ({ item, height = 20 }) => {
     switch (item) {
-        case 'bombos': return <img src={bombos} alt="bombos" height={height} />
-        case 'boots': return <img src={boots} alt="boots" height={height} />
-        case 'bow': return <img src={bow} alt="bow" height={height} />
-        case 'firerod': return <img src={firerod} alt="firerod" height={height} />
-        case 'flippers': return <img src={flippers} alt="flippers" height={height} />
-        case 'glove': return <img src={glove} alt="glove" height={height} />
-        case 'hammer': return <img src={hammer} alt="hammer" height={height} />
-        case 'hookshot': return <img src={hookshot} alt="hookshot" height={height} />
-        case 'lantern': return <img src={lantern} alt="lantern" height={height} />
-        case 'somaria': return <img src={somaria} alt="somaria" height={height} />
-        case 'torch': return <img src={torch} alt="torch" height={height} />
-        case 'bigKey': return <img src={bigKey} alt="bigKey" height={height} />
+        case 'bombos': return <img src={bombos} alt="" height={height} />
+        case 'boots': return <img src={boots} alt="" height={height} />
+        case 'bow': return <img src={bow} alt="" height={height} />
+        case 'firerod': return <img src={firerod} alt="" height={height} />
+        case 'flippers': return <img src={flippers} alt="" height={height} />
+        case 'glove': return <img src={glove} alt="" height={height} />
+        case 'hammer': return <img src={hammer} alt="" height={height} />
+        case 'hookshot': return <img src={hookshot} alt="" height={height} />
+        case 'lantern': return <img src={lantern} alt="" height={height} />
+        case 'somaria': return <img src={somaria} alt="" height={height} />
+        case 'torch': return <img src={torch} alt="" height={height} />
+        case 'bigKey': return <img src={bigKey} alt="" height={height} />
+        case 'smallKey': return <img src={smallKey} alt="" height={height} />
+        case 'sword': return <img src={sword} alt="" height={height} />
+        case 'bombs': return <img src={bombs} alt="" height={height} />
+        case 'blueSwitch': return <img src={blueSwitch} alt="" height={height} />
+        case 'redSwitch': return <img src={redSwitch} alt="" height={height} />
+        case 'other': return <img src={cross} alt="" height={height} />
         case 'dam': return <span>DAM</span>
         case 'attic': return <span>ATT<br />IC</span>
         default: return null

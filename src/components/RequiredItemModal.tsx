@@ -91,10 +91,11 @@ const RequiredItemModal: React.FC<Props> = () => {
         }
     }, [dungeon, state])
 
+
     const toggleItemSelected = React.useCallback((selectedItem: RequiredItem) => {
         if (selectedItems.includes(selectedItem)) {
             setSelectedItems(selectedItems => selectedItems.filter(item => item !== selectedItem))
-        } else if (selectedItems.length < 4) {
+        } else {
             setSelectedItems(selectedItems => [...selectedItems, selectedItem])
         }
     }, [setSelectedItems, selectedItems])
@@ -115,12 +116,14 @@ const RequiredItemModal: React.FC<Props> = () => {
         {dungeon && <>
             <div className={classes.root}>
                 <div className={classes.row}>
+                    {renderItem("sword")}
                     {renderItem("lantern")}
                     {renderItem("firerod")}
                     {renderItem("bombos")}
                     {renderItem("torch")}
                 </div>
                 <div className={classes.row}>
+                    {renderItem("bombs")}
                     {renderItem("bow")}
                     {renderItem("hookshot")}
                     {renderItem("hammer")}
@@ -131,10 +134,14 @@ const RequiredItemModal: React.FC<Props> = () => {
                     {renderItem("flippers")}
                     {renderItem("boots")}
                     {renderItem("bigKey")}
+                    {renderItem("smallKey")}
                 </div>
                 <div className={classes.row}>
+                    {renderItem("blueSwitch")}
+                    {renderItem("redSwitch")}
                     {renderItem("dam")}
                     {renderItem("attic")}
+                    {renderItem("other")}
                 </div>
             </div>
             <div className={classes.actions}>

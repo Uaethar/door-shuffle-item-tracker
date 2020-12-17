@@ -12,6 +12,7 @@ function createWindow() {
             ? "http://localhost:3000"
             : `file://${path.join(__dirname, "../build/index.html")}`
     );
+    mainWindow.setIcon(path.join(__dirname, '/logo32.png'))
     mainWindow.on("closed", () => (mainWindow = null));
 }
 app.on("ready", createWindow);

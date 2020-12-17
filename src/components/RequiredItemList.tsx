@@ -2,7 +2,7 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { RequiredItem } from '../config/types'
 import Item from './Item'
-
+import classNames from 'classnames'
 
 const useStyles = createUseStyles({
     root: {
@@ -24,6 +24,9 @@ const useStyles = createUseStyles({
         alignItems: 'center',
         lineHeight: '10px',
         textAlign: 'center'
+    },
+    etc: {
+        marginTop: -3
     }
 }, { name: 'RequiredItemList' })
 
@@ -35,16 +38,21 @@ type Props = {
 const RequiredItemList: React.FC<Props> = ({ required, openRequiredModal }) => {
     const classes = useStyles()
 
+    const requiredCount = React.useMemo(() => required.length, [required])
+
     return <div
         className={classes.root}
         onClick={() => openRequiredModal()}
         onContextMenu={(event) => event.preventDefault()}
     >
-        {required.slice(0, 4).map(item =>
+        {(requiredCount <= 4 ? required : required.slice(0, 3)).map(item =>
             <div className={classes.item}>
                 <Item item={item} />
             </div>
         )}
+        {requiredCount > 4 && <div className={classNames(classes.item, classes.etc)}>
+            ...
+        </div>}
     </div>
 }
 

@@ -2,20 +2,26 @@ export const DUNGEONS = ['HC', 'EP', 'DP', 'TOH', 'AT', 'POD', 'SP', 'SW', 'TT',
 export type Dungeon = typeof DUNGEONS[number]
 
 export const REQUIRED_ITEMS = [
+    'other',
+    'dam',
+    'attic',
+    'bigKey',
+    'smallKey',
+    'bombs',
+    'somaria',
+    'torch',
     'lantern',
     'firerod',
     'bombos',
-    'torch',
+    'sword',
     'bow',
     'hookshot',
     'hammer',
-    'somaria',
     'glove',
     'flippers',
     'boots',
-    'bigKey',
-    'dam',
-    'attic'
+    'redSwitch',
+    'blueSwitch',
 ] as const
 export type RequiredItem = typeof REQUIRED_ITEMS[number]
 
@@ -83,3 +89,9 @@ type ResetAction = {
 }
 
 export type ReducerAction = MapCompassAction | BigKeyAction | SmallKeyAction | ChestAction | EntranceAction | RequiredAction
+
+type TypeContenu<T extends string> = {}
+
+type TypeAccueil = TypeContenu<'accueil'>
+type GetContenu = <T extends string>(type: T) => TypeContenu<T>
+
