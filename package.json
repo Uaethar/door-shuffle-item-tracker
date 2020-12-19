@@ -3,7 +3,10 @@
   "description": "Dungeon item tracker for ALTTPR Door shuffle",
   "author": "Julien Rateau",
   "build": {
-    "appId": "com.DoorShuffleItemTracker"
+    "appId": "com.DoorShuffleItemTracker",
+    "win": {
+      "icon": "./build/icon.png"
+    }
   },
   "main": "public/electron.js",
   "homepage": "./",
