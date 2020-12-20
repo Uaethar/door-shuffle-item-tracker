@@ -137,7 +137,8 @@ type SetFromWebSocketAction = {
 }
 
 type ResetTrackerAction = {
-    type: 'resetTracker'
+    type: 'resetTracker',
+    resetSmallKeys: boolean
 }
 
 export type ReducerAction = MapCompassAction | BigKeyAction | SmallKeyAction | ChestAction | EntranceAction | RequiredAction | SetFromWebSocketAction | ResetTrackerAction

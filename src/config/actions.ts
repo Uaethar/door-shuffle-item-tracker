@@ -78,6 +78,7 @@ export const setFromWebSocket = (dispatch: Dispatch<ReducerAction>) => (data: It
     fromSram
 })
 
-export const resetTracker = (dispatch: Dispatch<ReducerAction>) => () => dispatch({
-    type: 'resetTracker'
+export const resetTracker = (dispatch: Dispatch<ReducerAction>) => (resetSmallKeys: boolean) => dispatch({
+    type: 'resetTracker',
+    resetSmallKeys
 })

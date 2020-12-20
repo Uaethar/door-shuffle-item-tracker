@@ -16,7 +16,7 @@ export type AppContext = {
         removeEntrance: (dungeon: Dungeon) => void,
         setRequired: (dungeon: Dungeon, required: Array<RequiredItem>) => void,
         setFromWebSocket: (data: ItemsFromWebSocket, fromSram: boolean) => void,
-        resetTracker: () => void,
+        resetTracker: (resetSmallKeys: boolean) => void,
     },
     autoTracking: boolean,
     setAutoTracking: (autoTracking: boolean) => void

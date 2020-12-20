@@ -171,10 +171,10 @@ export default (state: ReducerState, action: ReducerAction) => {
                 [dungeon]: {
                     ...defaultItems,
                     entrances: state[dungeon].entrances,
-                    smallKeys: {
+                    smallKeys: action.resetSmallKeys ? {
                         ...defaultItems.smallKeys,
                         total: state[dungeon].smallKeys.total
-                    },
+                    } : state[dungeon].smallKeys,
                     chests: state[dungeon].chests,
                     required: state[dungeon].required
                 }
