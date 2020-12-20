@@ -55,11 +55,12 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
                 fr.onloadend = () => {
                     const data = new Int8Array(fr.result as ArrayBuffer)
                     console.log('message received', data)
-                    // On considère que si toutes les données sont vides, c'est qu'on n'est pas en jeu, et donc qu'il faut récupérer les données dans la SRAM
+                    // If all data are empty, we are probably in title screen or file select, so we check SRAM content instead
                     if (!checkSram.current && data.every(value => value === 0)) {
                         checkSram.current = true
                     } else {
                         checkSram.current = false
+                        // TODO convert data and add it to context
                     }
                 }
                 fr.readAsArrayBuffer(result)
@@ -86,6 +87,7 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
                 const result = JSON.parse(message.data)['Results']
                 console.log('connection established')
                 if (result.length > 0) {
+                    // TODO add device selection menu
                     setDevice(result[0])
                 } else {
                     console.log('No device detected. Closing connection')
