@@ -29,7 +29,7 @@ const useStyles = createUseStyles({
         justifyContent: 'center',
         "&:not(:last-child)": {
             borderRight: '1px solid #fff'
-        
+
         }
     },
     cellAllUsed: {
@@ -50,7 +50,7 @@ type Props = {
 const Row: React.FC<Props> = ({ dungeon, stripped }) => {
     const classes = useStyles({ stripped })
 
-    const { state: { [dungeon]: { map, compass, bigKey, smallKeys, chests, entrances, required } }, actions } = React.useContext(AppContext)
+    const { state: { [dungeon]: { map, compass, bigKey, smallKeys, chests, entrances, required } }, actions, autoTracking } = React.useContext(AppContext)
     const { handleOpen } = React.useContext(RequiredModalContext)
 
     return <div className={classes.row}>
@@ -71,22 +71,22 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
         </div>
         <div className={classes.cell}>
             <Cell
-                onLeftClick={() => actions.toggleMap(dungeon)}
+                onLeftClick={() => !autoTracking && actions.toggleMap(dungeon)}
             >
                 {map && <img src={check} alt="" width={16} />}
             </Cell>
         </div>
         <div className={classes.cell}>
             <Cell
-                onLeftClick={() => actions.toggleCompass(dungeon)}
+                onLeftClick={() => !autoTracking && actions.toggleCompass(dungeon)}
             >
                 {compass && <img src={check} alt="" width={16} />}
             </Cell>
         </div>
         <div className={classes.cell}>
             <Cell
-                onLeftClick={() => actions.toggleBigKeyFound(dungeon)}
-                onRightClick={() => actions.toggleBigKeyUnaivalable(dungeon)}
+                onLeftClick={() => !autoTracking && actions.toggleBigKeyFound(dungeon)}
+                onRightClick={() => !(autoTracking && bigKey === 'found') && actions.toggleBigKeyUnaivalable(dungeon)}
             >
                 {bigKey === 'found' && <img src={check} alt="" width={16} />}
                 {bigKey === 'unavailable' && <img src={cross} alt="" width={16} />}
@@ -99,27 +99,26 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
             <Cell
                 onLeftClick={() => {
                     if (smallKeys.total === null || smallKeys.found < smallKeys.total) {
-                        actions.addSmallKey(dungeon, 'found')
+                        actions.addSmallKey(dungeon, 'found', autoTracking)
                     }
                 }}
-                onRightClick={() => actions.removeSmallKey(dungeon, 'found')}
+                onRightClick={() => actions.removeSmallKey(dungeon, 'found', autoTracking)}
             >
                 {smallKeys.found}
             </Cell>
             <Cell
-                onLeftClick={() => actions.addSmallKey(dungeon, 'total')}
-                onRightClick={() => actions.removeSmallKey(dungeon, 'total')}
+                onLeftClick={() => actions.addSmallKey(dungeon, 'total', autoTracking)}
+                onRightClick={() => actions.removeSmallKey(dungeon, 'total', autoTracking)}
             >
                 {smallKeys.total !== null ? smallKeys.total : '?'}
             </Cell>
             <Cell
                 onLeftClick={() => {
                     if (smallKeys.used < smallKeys.found) {
-                        actions.addSmallKey(dungeon, 'used')
+                        actions.addSmallKey(dungeon, 'used', autoTracking)
                     }
-                }
-                }
-                onRightClick={() => actions.removeSmallKey(dungeon, 'used')}
+                }}
+                onRightClick={() => actions.removeSmallKey(dungeon, 'used', autoTracking)}
             >
                 {smallKeys.used}
             </Cell>

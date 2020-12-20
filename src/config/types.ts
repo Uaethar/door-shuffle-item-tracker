@@ -46,6 +46,51 @@ export type DungeonItems = {
     required: Array<RequiredItem>
 }
 
+export type WebSocketItem = 'map' | 'compass' | 'bigKey' | 'smallKeys'
+
+export type DungeonItemsFromWebSocket = {
+    map: boolean,
+    compass: boolean,
+    bigKey: boolean,
+    smallKeys?: number
+}
+
+export class ItemsFromWebSocket {
+    data: Record<Dungeon, DungeonItemsFromWebSocket>
+
+    constructor() {
+        const emptyValues: DungeonItemsFromWebSocket = {
+            map: false,
+            compass: false,
+            bigKey: false,
+            smallKeys: 0
+        }
+        this.data =  {
+            'HC': emptyValues,
+            'EP': emptyValues,
+            'DP': emptyValues,
+            'TOH': emptyValues,
+            'AT': emptyValues,
+            'POD': emptyValues,
+            'SP': emptyValues,
+            'SW': emptyValues,
+            'TT': emptyValues,
+            'IP': emptyValues,
+            'MM': emptyValues,
+            'TR': emptyValues,
+            'GT': emptyValues,
+        }
+
+    }
+
+    setData(dungeon: Dungeon, data: Partial<DungeonItemsFromWebSocket>) {
+        this.data[dungeon] = {
+            ...this.data[dungeon],
+            ...data
+        }
+    }
+}
+
 export type ReducerState = Record<Dungeon, DungeonItems>
 
 type BaseAction = {
@@ -65,7 +110,8 @@ type BigKeyAction = BaseAction & {
 type SmallKeyAction = BaseAction & {
     type: 'smallKey',
     subItem: 'found' | 'total' | 'used',
-    value: 'plus' | 'minus'
+    value: 'plus' | 'minus',
+    autoTracking: boolean
 }
 
 type ChestAction = BaseAction & {
@@ -84,14 +130,15 @@ type RequiredAction = BaseAction & {
     value: Array<RequiredItem>
 }
 
-type ResetAction = {
-    type: 'reset'
+type SetFromWebSocketAction = {
+    type: 'fromWebSocket',
+    data: ItemsFromWebSocket,
+    fromSram: boolean
 }
 
-export type ReducerAction = MapCompassAction | BigKeyAction | SmallKeyAction | ChestAction | EntranceAction | RequiredAction
+type ResetTrackerAction = {
+    type: 'resetTracker'
+}
 
-type TypeContenu<T extends string> = {}
-
-type TypeAccueil = TypeContenu<'accueil'>
-type GetContenu = <T extends string>(type: T) => TypeContenu<T>
+export type ReducerAction = MapCompassAction | BigKeyAction | SmallKeyAction | ChestAction | EntranceAction | RequiredAction | SetFromWebSocketAction | ResetTrackerAction
 

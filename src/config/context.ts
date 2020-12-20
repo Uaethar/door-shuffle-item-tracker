@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dungeon, RequiredItem, ReducerState } from './types'
+import { Dungeon, RequiredItem, ReducerState, ItemsFromWebSocket } from './types'
 
 export type AppContext = {
     state: ReducerState,
@@ -8,14 +8,18 @@ export type AppContext = {
         toggleCompass: (dungeon: Dungeon) => void,
         toggleBigKeyFound: (dungeon: Dungeon) => void,
         toggleBigKeyUnaivalable: (dungeon: Dungeon) => void,
-        addSmallKey: (dungeon: Dungeon, subItem: 'found' | 'total' | 'used') => void,
-        removeSmallKey: (dungeon: Dungeon, subItem: 'found' | 'total' | 'used') => void,
+        addSmallKey: (dungeon: Dungeon, subItem: 'found' | 'total' | 'used', autoTracking: boolean) => void,
+        removeSmallKey: (dungeon: Dungeon, subItem: 'found' | 'total' | 'used', autoTracking: boolean) => void,
         addChest: (dungeon: Dungeon, subItem: 'found' | 'total') => void,
         removeChest: (dungeon: Dungeon, subItem: 'found' | 'total') => void,
         addEntrance: (dungeon: Dungeon) => void,
         removeEntrance: (dungeon: Dungeon) => void,
-        setRequired: (dungeon: Dungeon, required: Array<RequiredItem>) => void
-    }
+        setRequired: (dungeon: Dungeon, required: Array<RequiredItem>) => void,
+        setFromWebSocket: (data: ItemsFromWebSocket, fromSram: boolean) => void,
+        resetTracker: () => void,
+    },
+    autoTracking: boolean,
+    setAutoTracking: (autoTracking: boolean) => void
 }
 
 export const AppContext = React.createContext<AppContext>(null as any)

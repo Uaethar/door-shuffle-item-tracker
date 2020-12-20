@@ -112,6 +112,7 @@ const RequiredItemModal: React.FC<Props> = () => {
         isOpen={open}
         className={classes.modal}
         overlayClassName={classes.overlay}
+        ariaHideApp={false}
     >
         {dungeon && <>
             <div className={classes.root}>

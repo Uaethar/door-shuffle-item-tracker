@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import { Dungeon, RequiredItem, ReducerAction } from "./types";
+import { Dungeon, RequiredItem, ReducerAction, ItemsFromWebSocket } from "./types";
 
 export const toggleMap = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon) => dispatch({
     type: 'toggle',
@@ -25,18 +25,20 @@ export const toggleBigKeyUnaivalable = (dispatch: Dispatch<ReducerAction>) => (d
     value: 'unavailable'
 })
 
-export const addSmallKey = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon, subItem: 'found' | 'total' | 'used') => dispatch({
+export const addSmallKey = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon, subItem: 'found' | 'total' | 'used', autoTracking: boolean) => dispatch({
     type: 'smallKey',
     dungeon,
     subItem,
-    value: 'plus'
+    value: 'plus',
+    autoTracking
 })
 
-export const removeSmallKey = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon, subItem: 'found' | 'total' | 'used') => dispatch({
+export const removeSmallKey = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon, subItem: 'found' | 'total' | 'used', autoTracking: boolean) => dispatch({
     type: 'smallKey',
     dungeon,
     subItem,
-    value: 'minus'
+    value: 'minus',
+    autoTracking
 })
 
 export const addChest = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon, subItem: 'found' | 'total') => dispatch({
@@ -68,4 +70,14 @@ export const setRequired = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dung
     type: 'required',
     dungeon,
     value: required
+})
+
+export const setFromWebSocket = (dispatch: Dispatch<ReducerAction>) => (data: ItemsFromWebSocket, fromSram: boolean) => dispatch({
+    type: 'fromWebSocket',
+    data,
+    fromSram
+})
+
+export const resetTracker = (dispatch: Dispatch<ReducerAction>) => () => dispatch({
+    type: 'resetTracker'
 })

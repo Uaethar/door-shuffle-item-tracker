@@ -1,4 +1,4 @@
-import { DungeonItems, ReducerState, ReducerAction, sortRequired } from "./types";
+import { DungeonItems, ReducerState, ReducerAction, sortRequired, DungeonItemsFromWebSocket, DUNGEONS } from "./types";
 
 const defaultItems: Omit<DungeonItems, 'entrances'> = {
     map: false,
@@ -30,7 +30,7 @@ export const init: ReducerState = {
     'IP': { ...defaultItems, entrances: { found: 0, max: 1 } },
     'MM': { ...defaultItems, entrances: { found: 0, max: 1 } },
     'TR': { ...defaultItems, entrances: { found: 0, max: 4 } },
-    'GT': { ...defaultItems, entrances: { found: 0, max: 1 } },
+    'GT': { ...defaultItems, entrances: { found: 0, max: 1 } }
 }
 
 const computeNewValue = (action: 'plus' | 'minus', value: number) => {
@@ -49,6 +49,42 @@ const computeNewNullableValue = (action: 'plus' | 'minus', value: number | null,
         else return value - 1
     }
     return value
+}
+
+const mergeDungeon = (dataFromState: DungeonItems, dataFromWebSocket: DungeonItemsFromWebSocket, fromSram: boolean): DungeonItems => {
+    const smallKeysInPossession = dataFromState.smallKeys.found - dataFromState.smallKeys.used
+    const smallKeysDelta = smallKeysInPossession - (dataFromWebSocket.smallKeys || 0)
+    let newSmallKeysFound = dataFromState.smallKeys.found
+    let newSmallKeysUsed = dataFromState.smallKeys.used
+    if (smallKeysDelta > 0) {
+        if (fromSram) {
+            newSmallKeysUsed -= smallKeysDelta
+        } else {
+            newSmallKeysFound += smallKeysDelta
+        }
+    } else if (smallKeysDelta < 0) {
+        if (fromSram) {
+            newSmallKeysFound -= smallKeysDelta
+        } else {
+            newSmallKeysUsed += smallKeysDelta
+        }
+    }
+    if (newSmallKeysUsed < 0) {
+        newSmallKeysFound -= newSmallKeysUsed
+        newSmallKeysUsed = 0
+    }
+    return ({
+        ...dataFromState,
+        map: dataFromWebSocket.map,
+        compass: dataFromWebSocket.compass,
+        bigKey: dataFromWebSocket.bigKey ? 'found' : dataFromState.bigKey,
+        smallKeys: {
+            ...dataFromState.smallKeys,
+            found: newSmallKeysFound,
+            used: newSmallKeysUsed,
+            total: dataFromState.smallKeys.total != null ? Math.max(dataFromState.smallKeys.total, newSmallKeysFound) : null
+        },
+    });
 }
 
 export default (state: ReducerState, action: ReducerAction) => {
@@ -72,16 +108,25 @@ export default (state: ReducerState, action: ReducerAction) => {
             }
         }
         case 'smallKey': {
+            const smallKeys = { ...state[action.dungeon].smallKeys }
+            if (action.subItem === 'total') {
+                smallKeys.total = computeNewNullableValue(action.value, state[action.dungeon].smallKeys[action.subItem], state[action.dungeon].smallKeys.found)  
+            } else {
+                if (action.autoTracking) {
+                    if ((action.value === 'plus' && (!smallKeys.total || smallKeys.found < smallKeys.total)) ||
+                    (action.value === 'minus' && smallKeys.used > 0)) {
+                        smallKeys.found = computeNewValue(action.value, smallKeys.found)
+                        smallKeys.used = computeNewValue(action.value, smallKeys.used)
+                    }
+                } else {
+                    smallKeys[action.subItem] = computeNewValue(action.value, smallKeys[action.subItem])
+                }
+            }
             return {
                 ...state,
                 [action.dungeon]: {
                     ...state[action.dungeon],
-                    smallKeys: {
-                        ...state[action.dungeon].smallKeys,
-                        [action.subItem]: action.subItem === 'total' ?
-                            computeNewNullableValue(action.value, state[action.dungeon].smallKeys[action.subItem], state[action.dungeon].smallKeys.found) :
-                            computeNewValue(action.value, state[action.dungeon].smallKeys[action.subItem])
-                    }
+                    smallKeys
                 }
             }
         }
@@ -119,6 +164,27 @@ export default (state: ReducerState, action: ReducerAction) => {
                     required: action.value.sort(sortRequired)
                 }
             }
+        }
+        case 'resetTracker': {
+            return DUNGEONS.reduce((acc, dungeon) => ({
+                ...acc,
+                [dungeon]: {
+                    ...defaultItems,
+                    entrances: state[dungeon].entrances,
+                    smallKeys: {
+                        ...defaultItems.smallKeys,
+                        total: state[dungeon].smallKeys.total
+                    },
+                    chests: state[dungeon].chests,
+                    required: state[dungeon].required
+                }
+            }), {} as ReducerState)
+        }
+        case 'fromWebSocket': {
+            return DUNGEONS.reduce((acc, dungeon) => ({
+                ...acc,
+                [dungeon]: mergeDungeon(state[dungeon], action.data.data[dungeon], action.fromSram)
+            }), {} as ReducerState)
         }
         default:
             return state
