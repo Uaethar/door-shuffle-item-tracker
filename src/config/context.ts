@@ -28,8 +28,9 @@ export const AppContext = React.createContext<AppContext>(null as any)
 
 export type RequiredModalContext = {
     dungeon?: Dungeon,
+    required: Array<RequiredItem>,
     open: boolean,
-    handleOpen: (dungeon: Dungeon) => void
+    handleOpen: (dungeon: Dungeon, required: Array<RequiredItem>) => void
     handleClose: VoidFunction
 }
 

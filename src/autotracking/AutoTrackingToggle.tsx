@@ -151,7 +151,7 @@ const AutoTrackingToggle: React.FC = () => {
                 fr.readAsArrayBuffer(result)
             }
         }
-    }, [device, ws, sendMessage, convertAndUpdateItems, resetTracker, setAutoTracking, displayMessage])
+    }, [device, ws, sendMessage, convertAndUpdateItems, resetTracker, setAutoTracking, displayMessage, trackSmallKeys])
 
     const connect = React.useCallback(() => {
         const socket = new WebSocket('ws://localhost:8080')
@@ -221,7 +221,7 @@ const AutoTrackingToggle: React.FC = () => {
     return <div className={classes.root}>
         <div className={classes.message}>{message.split("\n").map((line, index) => {
             if (index !== 0) {
-                return <><br />{line}</>
+                return <React.Fragment key={index}><br />{line}</React.Fragment>
             }
             return line
         })}</div>

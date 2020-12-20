@@ -45,8 +45,8 @@ const RequiredItemList: React.FC<Props> = ({ required, openRequiredModal }) => {
         onClick={() => openRequiredModal()}
         onContextMenu={(event) => event.preventDefault()}
     >
-        {(requiredCount <= 4 ? required : required.slice(0, 3)).map(item =>
-            <div className={classes.item}>
+        {(requiredCount <= 4 ? required : required.slice(0, 3)).map((item, index) =>
+            <div className={classes.item} key={index}>
                 <Item item={item} />
             </div>
         )}

@@ -142,7 +142,7 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
             </Cell>
         </div>
         <div className={classes.cell}>
-            <RequiredItemList required={required} openRequiredModal={() => handleOpen(dungeon)} />
+            <RequiredItemList required={required} openRequiredModal={() => handleOpen(dungeon, required)} />
         </div>
     </div>
 }

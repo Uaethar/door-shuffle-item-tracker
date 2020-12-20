@@ -78,18 +78,14 @@ const RequiredItemModal: React.FC<Props> = () => {
 
     const classes = useStyles()
 
-    const { dungeon, open, handleClose } = React.useContext(RequiredModalContext)
+    const { dungeon, required, open, handleClose } = React.useContext(RequiredModalContext)
     const { state, actions } = React.useContext(AppContext)
 
     const [selectedItems, setSelectedItems] = React.useState<Array<RequiredItem>>([])
 
     React.useEffect(() => {
-        if (typeof dungeon !== 'undefined') {
-            setSelectedItems(state[dungeon].required)
-        } else {
-            setSelectedItems([])
-        }
-    }, [dungeon, state])
+        setSelectedItems(required)
+    }, [required])
 
 
     const toggleItemSelected = React.useCallback((selectedItem: RequiredItem) => {

@@ -1,4 +1,4 @@
-import { DungeonItems, ReducerState, ReducerAction, sortRequired, DungeonItemsFromWebSocket, DUNGEONS } from "./types";
+import { DungeonItems, ReducerState, ReducerAction, sortRequired, DungeonItemsFromWebSocket, DUNGEONS, Dungeon } from "./types";
 
 const defaultItems: Omit<DungeonItems, 'entrances'> = {
     map: false,
@@ -51,11 +51,12 @@ const computeNewNullableValue = (action: 'plus' | 'minus', value: number | null,
     return value
 }
 
-const mergeDungeon = (dataFromState: DungeonItems, dataFromWebSocket: DungeonItemsFromWebSocket, fromSram: boolean): DungeonItems => {
+const mergeDungeon = (dataFromState: DungeonItems, dataFromWebSocket: DungeonItemsFromWebSocket, fromSram: boolean, dungeon: Dungeon): DungeonItems => {
     const smallKeysInPossession = dataFromState.smallKeys.found - dataFromState.smallKeys.used
-    const smallKeysDelta = smallKeysInPossession - (dataFromWebSocket.smallKeys || smallKeysInPossession)
+    const smallKeysDelta = (typeof dataFromWebSocket.smallKeys !== 'undefined' ? dataFromWebSocket.smallKeys : smallKeysInPossession) - smallKeysInPossession
     let newSmallKeysFound = dataFromState.smallKeys.found
     let newSmallKeysUsed = dataFromState.smallKeys.used
+    if (dungeon === 'HC') console.log(smallKeysInPossession, dataFromWebSocket.smallKeys, smallKeysDelta)
     if (smallKeysDelta > 0) {
         if (fromSram) {
             newSmallKeysUsed -= smallKeysDelta
@@ -64,9 +65,9 @@ const mergeDungeon = (dataFromState: DungeonItems, dataFromWebSocket: DungeonIte
         }
     } else if (smallKeysDelta < 0) {
         if (fromSram) {
-            newSmallKeysFound -= smallKeysDelta
+            newSmallKeysFound += smallKeysDelta
         } else {
-            newSmallKeysUsed += smallKeysDelta
+            newSmallKeysUsed -= smallKeysDelta
         }
     }
     if (newSmallKeysUsed < 0) {
@@ -181,10 +182,12 @@ export default (state: ReducerState, action: ReducerAction) => {
             }), {} as ReducerState)
         }
         case 'fromWebSocket': {
-            return DUNGEONS.reduce((acc, dungeon) => ({
-                ...acc,
-                [dungeon]: mergeDungeon(state[dungeon], action.data.data[dungeon], action.fromSram)
-            }), {} as ReducerState)
+            return DUNGEONS.reduce((acc, dungeon) => {
+                return ({
+                    ...acc,
+                    [dungeon]: mergeDungeon(state[dungeon], action.data.data[dungeon], action.fromSram, dungeon)
+                });
+            }, {} as ReducerState)
         }
         default:
             return state

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
-import { Dungeon, DUNGEONS } from '../config/types'
+import { Dungeon, DUNGEONS, RequiredItem } from '../config/types'
 import Header from '../components/Header'
 import reducer, { init } from '../config/reducer';
 import * as actions from '../config/actions'
@@ -41,6 +41,7 @@ const App: React.FC<{}> = () => {
 
   const [openModale, setOpenModale] = React.useState(false)
   const [dungeon, setDungeon] = React.useState<Dungeon>()
+  const [requiredModal, setRequiredModal] = React.useState<Array<RequiredItem>>([])
   const [autoTracking, setAutoTracking] = React.useState<AutoTrackingMode>('disabled')
 
   return <div className={classes.root}>
@@ -67,13 +68,16 @@ const App: React.FC<{}> = () => {
     }}>
       <RequiredModalContext.Provider value={{
         dungeon: dungeon,
+        required: requiredModal,
         open: openModale,
-        handleOpen: (dungeon: Dungeon) => {
+        handleOpen: (dungeon: Dungeon, required: Array<RequiredItem>) => {
           setDungeon(dungeon)
+          setRequiredModal(required)
           setOpenModale(true)
         },
         handleClose: () => {
           setDungeon(undefined)
+          setRequiredModal([])
           setOpenModale(false)
         }
       }}>
