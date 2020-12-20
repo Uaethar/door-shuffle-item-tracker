@@ -87,38 +87,13 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
                 console.log('connection established')
                 if (result.length > 0) {
                     setDevice(result[0])
-                    // console.log(`attach to device ${result[0]}`)
-                    // sendMessage(socket, {
-                    //     Opcode: 'Attach',
-                    //     Space: 'SNES',
-                    //     Operands: [result[0]]
-                    // })
-
-                    // // WRAM range: f5f000 ~ f5f500 (live update, only in game)
-                    // // SRAM range: e08000 ~ e08500 (updated when s&q, always accessible)
-                    // getInfoInterval.current = setInterval(() => sendMessage(socket, {
-                    //     Opcode: 'GetAddress',
-                    //     Space: 'SNES',
-                    //     Operands: [checkSram.current ? 'e08364' : 'f5f364', '26']
-                    // }), 1000)
                 } else {
                     console.log('No device detected. Closing connection')
                     close(socket)
                 }
             } catch (e) {
-                // const result = message.data as Blob
-                // const fr = new FileReader()
-                // fr.onloadend = () => {
-                //     const data = new Int8Array(fr.result as ArrayBuffer)
-                //     console.log('message received', data)
-                //     // On considère que si toutes les données sont vides, c'est qu'on n'est pas en jeu, et donc qu'il faut récupérer les données dans la SRAM
-                //     if (!checkSram.current && data.every(value => value === 0)) {
-                //         checkSram.current = true
-                //     } else {
-                //         checkSram.current = false
-                //     }
-                // }
-                // fr.readAsArrayBuffer(result)
+                console.error(`error while parsing message from Qusb2snes. message payload: ${message.data}`, e)
+                close(socket)
             }
         }
 
