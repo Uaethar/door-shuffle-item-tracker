@@ -5,7 +5,7 @@ const path = require("path");
 const isDev = require("electron-is-dev");
 let mainWindow;
 function createWindow() {
-    mainWindow = new BrowserWindow({ width: 349, height: 404, resizable: false });
+    mainWindow = new BrowserWindow({ width: 349, height: 440, resizable: false });
     mainWindow.setMenuBarVisibility(false)
     mainWindow.loadURL(
         isDev
