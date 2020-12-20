@@ -16,6 +16,7 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
     const getInfoInterval = React.useRef<NodeJS.Timeout>()
     const checkSram = React.useRef(false)
     const [device, setDevice] = React.useState<string>()
+    const connectTimeout = React.useRef<NodeJS.Timeout>()
 
     const sendMessage = React.useCallback((socket: WebSocket, message: any) => {
         console.log('send message', message)
@@ -30,7 +31,7 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
 
     React.useEffect(() => {
         if (device && ws) {
-            console.log(`attach to device ${device}`)
+            console.log(`Attach to device ${device}`)
             sendMessage(ws, {
                 Opcode: 'Attach',
                 Space: 'SNES',
@@ -72,25 +73,32 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
         const socket = new WebSocket('ws://localhost:8080')
 
         socket.onopen = () => {
-            console.log('connect to web socket');
+            console.log('Connect to Qusb2snes');
             setWs(socket)
 
             sendMessage(socket, {
                 Opcode: 'DeviceList',
                 Space: 'SNES'
             })
+            connectTimeout.current = setTimeout(() => {
+                console.log('Connection refused. Please ensure that Qusb2snes is running.')
+            }, 5000)
         }
 
         socket.onmessage = message => {
             try {
                 console.log('message received', JSON.parse(message.data))
                 const result = JSON.parse(message.data)['Results']
-                console.log('connection established')
+                console.log('Connection established.')
+                if (connectTimeout.current) {
+                    clearTimeout(connectTimeout.current)
+                    connectTimeout.current = undefined
+                }
                 if (result.length > 0) {
                     // TODO add device selection menu
                     setDevice(result[0])
                 } else {
-                    console.log('No device detected. Closing connection')
+                    console.log('No device detected. Close connection.')
                     close(socket)
                 }
             } catch (e) {
@@ -110,7 +118,7 @@ export const WebSocketContextProvider: React.FC = ({ children }) => {
         }
 
         socket.onclose = () => {
-            console.log('close connection')
+            console.log('Close connection')
             if (getInfoInterval.current) {
                 clearInterval(getInfoInterval.current)
                 getInfoInterval.current = undefined
