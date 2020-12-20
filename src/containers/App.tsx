@@ -7,6 +7,8 @@ import * as actions from '../config/actions'
 import { AppContext, RequiredModalContext } from '../config/context';
 import Row from '../components/Row';
 import RequiredItemModal from '../components/RequiredItemModal';
+import { WebSocketContextProvider } from '../autotracking/context';
+import AutoTrackingToggle from '../autotracking/AutoTrackingToggle';
 
 const useStyles = createUseStyles({
   root: {
@@ -41,38 +43,41 @@ const App: React.FC<{}> = () => {
 
   return <div className={classes.root}>
     <Header />
-    <AppContext.Provider value={{
-      state,
-      actions: {
-        toggleMap,
-        toggleCompass,
-        toggleBigKeyFound,
-        toggleBigKeyUnaivalable,
-        addSmallKey,
-        removeSmallKey,
-        addChest,
-        removeChest,
-        addEntrance,
-        removeEntrance,
-        setRequired
-      }
-    }}>
-      <RequiredModalContext.Provider value={{
-        dungeon: dungeon,
-        open: openModale,
-        handleOpen: (dungeon: Dungeon) => {
-          setDungeon(dungeon)
-          setOpenModale(true)
-        },
-        handleClose: () => {
-          setDungeon(undefined)
-          setOpenModale(false)
+    <WebSocketContextProvider>
+      <AppContext.Provider value={{
+        state,
+        actions: {
+          toggleMap,
+          toggleCompass,
+          toggleBigKeyFound,
+          toggleBigKeyUnaivalable,
+          addSmallKey,
+          removeSmallKey,
+          addChest,
+          removeChest,
+          addEntrance,
+          removeEntrance,
+          setRequired
         }
       }}>
-        {DUNGEONS.map((dungeon, index) => <Row key={index} dungeon={dungeon} stripped={index % 2 === 0} />)}
-        <RequiredItemModal />
-      </RequiredModalContext.Provider>
-    </AppContext.Provider>
+        <RequiredModalContext.Provider value={{
+          dungeon: dungeon,
+          open: openModale,
+          handleOpen: (dungeon: Dungeon) => {
+            setDungeon(dungeon)
+            setOpenModale(true)
+          },
+          handleClose: () => {
+            setDungeon(undefined)
+            setOpenModale(false)
+          }
+        }}>
+          {DUNGEONS.map((dungeon, index) => <Row key={index} dungeon={dungeon} stripped={index % 2 === 0} />)}
+          <RequiredItemModal />
+          <AutoTrackingToggle />
+        </RequiredModalContext.Provider>
+      </AppContext.Provider>
+    </WebSocketContextProvider>
   </div>
 }
 
