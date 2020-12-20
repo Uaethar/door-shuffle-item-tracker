@@ -53,7 +53,7 @@ const computeNewNullableValue = (action: 'plus' | 'minus', value: number | null,
 
 const mergeDungeon = (dataFromState: DungeonItems, dataFromWebSocket: DungeonItemsFromWebSocket, fromSram: boolean): DungeonItems => {
     const smallKeysInPossession = dataFromState.smallKeys.found - dataFromState.smallKeys.used
-    const smallKeysDelta = smallKeysInPossession - (dataFromWebSocket.smallKeys || 0)
+    const smallKeysDelta = smallKeysInPossession - (dataFromWebSocket.smallKeys || smallKeysInPossession)
     let newSmallKeysFound = dataFromState.smallKeys.found
     let newSmallKeysUsed = dataFromState.smallKeys.used
     if (smallKeysDelta > 0) {

@@ -4,7 +4,7 @@ import { Dungeon, DUNGEONS } from '../config/types'
 import Header from '../components/Header'
 import reducer, { init } from '../config/reducer';
 import * as actions from '../config/actions'
-import { AppContext, RequiredModalContext } from '../config/context';
+import { AppContext, AutoTrackingMode, RequiredModalContext } from '../config/context';
 import Row from '../components/Row';
 import RequiredItemModal from '../components/RequiredItemModal';
 import AutoTrackingToggle from '../autotracking/AutoTrackingToggle';
@@ -41,7 +41,7 @@ const App: React.FC<{}> = () => {
 
   const [openModale, setOpenModale] = React.useState(false)
   const [dungeon, setDungeon] = React.useState<Dungeon>()
-  const [autoTracking, setAutoTracking] = React.useState(false)
+  const [autoTracking, setAutoTracking] = React.useState<AutoTrackingMode>('disabled')
 
   return <div className={classes.root}>
     <Header />

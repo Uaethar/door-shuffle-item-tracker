@@ -77,7 +77,6 @@ const AutoTrackingModal: React.FC<Props> = ({ open, handleCancel, closeModal, co
     const [trackSmallKeys, setTrackSmallKeys] = React.useState(true)
 
     const handleConnect = React.useCallback(() => {
-        console.log('here', device)
         if (typeof device != 'undefined') {
             connect(deviceList[device], trackSmallKeys)
             closeModal()
@@ -97,7 +96,7 @@ const AutoTrackingModal: React.FC<Props> = ({ open, handleCancel, closeModal, co
         <div className={classes.root}>
             <div className={classes.title}>Select device:</div>
             {deviceList.map((name, index) => <button key={index} className={classNames(classes.button, { [classes.selected]: device === index })} onClick={() => setDevice(index)}>{name}</button>)}
-            {/* <div className={classes.smallKeys}>
+            <div className={classes.smallKeys}>
                 <label htmlFor="trackSmallKeys">Track smallKeys</label>
                 <input
                     type="checkbox"
@@ -106,7 +105,7 @@ const AutoTrackingModal: React.FC<Props> = ({ open, handleCancel, closeModal, co
                     checked={trackSmallKeys}
                     onChange={(event) => setTrackSmallKeys(event.target.checked)}
                 />
-            </div> */}
+            </div>
             <div className={classes.actions}>
                 <button
                     className={classes.button}

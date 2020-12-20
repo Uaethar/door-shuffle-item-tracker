@@ -1,6 +1,8 @@
 import React from 'react'
 import { Dungeon, RequiredItem, ReducerState, ItemsFromWebSocket } from './types'
 
+export type AutoTrackingMode = 'disabled' | 'enabled'| 'enabledSmallKeys'
+
 export type AppContext = {
     state: ReducerState,
     actions: {
@@ -18,8 +20,8 @@ export type AppContext = {
         setFromWebSocket: (data: ItemsFromWebSocket, fromSram: boolean) => void,
         resetTracker: (resetSmallKeys: boolean) => void,
     },
-    autoTracking: boolean,
-    setAutoTracking: (autoTracking: boolean) => void
+    autoTracking: AutoTrackingMode,
+    setAutoTracking: (autoTracking: AutoTrackingMode) => void
 }
 
 export const AppContext = React.createContext<AppContext>(null as any)

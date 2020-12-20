@@ -122,7 +122,7 @@ const AutoTrackingToggle: React.FC = () => {
                 clearInterval(getInfoInterval.current)
             }
             resetTracker(trackSmallKeys)
-            setAutoTracking(true)
+            setAutoTracking(trackSmallKeys ? 'enabledSmallKeys' : 'enabled')
 
             // WRAM range: f5f000 ~ f5f500 (live update, only in game)
             // SRAM range: e08000 ~ e08500 (updated when s&q, always accessible)
@@ -133,7 +133,6 @@ const AutoTrackingToggle: React.FC = () => {
             }), 1000)
 
             ws.onmessage = message => {
-                console.log(message.data)
                 const result = message.data as Blob
                 const fr = new FileReader()
                 fr.onloadend = () => {
@@ -215,7 +214,7 @@ const AutoTrackingToggle: React.FC = () => {
             setConnecting(false)
             setWs(undefined)
             setDevice(undefined)
-            setAutoTracking(false)
+            setAutoTracking('disabled')
         }
     }, [sendMessage, close, setAutoTracking, displayMessage, error, handleOpenModal])
 
