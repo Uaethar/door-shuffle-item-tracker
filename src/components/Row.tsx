@@ -71,22 +71,22 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
         </div>
         <div className={classes.cell}>
             <Cell
-                onLeftClick={() => autoTracking !== 'disabled' && actions.toggleMap(dungeon)}
+                onLeftClick={() => autoTracking === 'disabled' && actions.toggleMap(dungeon)}
             >
                 {map && <img src={check} alt="" width={16} />}
             </Cell>
         </div>
         <div className={classes.cell}>
             <Cell
-                onLeftClick={() => autoTracking !== 'disabled' && actions.toggleCompass(dungeon)}
+                onLeftClick={() => autoTracking === 'disabled' && actions.toggleCompass(dungeon)}
             >
                 {compass && <img src={check} alt="" width={16} />}
             </Cell>
         </div>
         <div className={classes.cell}>
             <Cell
-                onLeftClick={() => autoTracking !== 'disabled' && actions.toggleBigKeyFound(dungeon)}
-                onRightClick={() => !(autoTracking === 'disabled' && bigKey === 'found') && actions.toggleBigKeyUnaivalable(dungeon)}
+                onLeftClick={() => autoTracking === 'disabled' && actions.toggleBigKeyFound(dungeon)}
+                onRightClick={() => !(autoTracking !== 'disabled' && bigKey === 'found') && actions.toggleBigKeyUnaivalable(dungeon)}
             >
                 {bigKey === 'found' && <img src={check} alt="" width={16} />}
                 {bigKey === 'unavailable' && <img src={cross} alt="" width={16} />}
