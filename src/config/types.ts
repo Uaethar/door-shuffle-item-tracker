@@ -30,7 +30,7 @@ export const sortRequired = (a: RequiredItem, b: RequiredItem) => REQUIRED_ITEMS
 export type DungeonSubItems = {
     found: number,
     total: number | null,
-    used: number
+    current: number
 }
 
 export type DungeonItems = {
@@ -46,13 +46,14 @@ export type DungeonItems = {
     required: Array<RequiredItem>
 }
 
-export type WebSocketItem = 'map' | 'compass' | 'bigKey' | 'smallKeys'
+export type WebSocketItem = 'map' | 'compass' | 'bigKey' | 'smallKeys' | 'currentSmallKeys'
 
 export type DungeonItemsFromWebSocket = {
     map: boolean,
     compass: boolean,
     bigKey: boolean,
-    smallKeys?: number
+    currentSmallKeys: number,
+    smallKeys: number
 }
 
 export class ItemsFromWebSocket {
@@ -63,6 +64,7 @@ export class ItemsFromWebSocket {
             map: false,
             compass: false,
             bigKey: false,
+            currentSmallKeys: 0,
             smallKeys: 0
         }
         this.data =  {
@@ -109,9 +111,8 @@ type BigKeyAction = BaseAction & {
 
 type SmallKeyAction = BaseAction & {
     type: 'smallKey',
-    subItem: 'found' | 'total' | 'used',
-    value: 'plus' | 'minus',
-    autoTracking: boolean
+    subItem: 'found' | 'total' | 'current',
+    value: 'plus' | 'minus'
 }
 
 type ChestAction = BaseAction & {
@@ -132,8 +133,7 @@ type RequiredAction = BaseAction & {
 
 type SetFromWebSocketAction = {
     type: 'fromWebSocket',
-    data: ItemsFromWebSocket,
-    fromSram: boolean
+    data: ItemsFromWebSocket
 }
 
 type ResetTrackerAction = {

@@ -79,7 +79,7 @@ const RequiredItemModal: React.FC<Props> = () => {
     const classes = useStyles()
 
     const { dungeon, required, open, handleClose } = React.useContext(RequiredModalContext)
-    const { state, actions } = React.useContext(AppContext)
+    const { actions } = React.useContext(AppContext)
 
     const [selectedItems, setSelectedItems] = React.useState<Array<RequiredItem>>([])
 

@@ -7,12 +7,12 @@ const defaultItems: Omit<DungeonItems, 'entrances'> = {
     smallKeys: {
         found: 0,
         total: null,
-        used: 0
+        current: 0
     },
     chests: {
         found: 0,
         total: null,
-        used: 0
+        current: 0
     },
     required: []
 }
@@ -51,29 +51,7 @@ const computeNewNullableValue = (action: 'plus' | 'minus', value: number | null,
     return value
 }
 
-const mergeDungeon = (dataFromState: DungeonItems, dataFromWebSocket: DungeonItemsFromWebSocket, fromSram: boolean, dungeon: Dungeon): DungeonItems => {
-    const smallKeysInPossession = dataFromState.smallKeys.found - dataFromState.smallKeys.used
-    const smallKeysDelta = (typeof dataFromWebSocket.smallKeys !== 'undefined' ? dataFromWebSocket.smallKeys : smallKeysInPossession) - smallKeysInPossession
-    let newSmallKeysFound = dataFromState.smallKeys.found
-    let newSmallKeysUsed = dataFromState.smallKeys.used
-    if (dungeon === 'HC') console.log(smallKeysInPossession, dataFromWebSocket.smallKeys, smallKeysDelta)
-    if (smallKeysDelta > 0) {
-        if (fromSram) {
-            newSmallKeysUsed -= smallKeysDelta
-        } else {
-            newSmallKeysFound += smallKeysDelta
-        }
-    } else if (smallKeysDelta < 0) {
-        if (fromSram) {
-            newSmallKeysFound += smallKeysDelta
-        } else {
-            newSmallKeysUsed -= smallKeysDelta
-        }
-    }
-    if (newSmallKeysUsed < 0) {
-        newSmallKeysFound -= newSmallKeysUsed
-        newSmallKeysUsed = 0
-    }
+const mergeDungeon = (dataFromState: DungeonItems, dataFromWebSocket: DungeonItemsFromWebSocket, dungeon: Dungeon): DungeonItems => {
     return ({
         ...dataFromState,
         map: dataFromWebSocket.map,
@@ -81,9 +59,8 @@ const mergeDungeon = (dataFromState: DungeonItems, dataFromWebSocket: DungeonIte
         bigKey: dataFromWebSocket.bigKey ? 'found' : dataFromState.bigKey,
         smallKeys: {
             ...dataFromState.smallKeys,
-            found: newSmallKeysFound,
-            used: newSmallKeysUsed,
-            total: dataFromState.smallKeys.total != null ? Math.max(dataFromState.smallKeys.total, newSmallKeysFound) : null
+            found: dataFromWebSocket.smallKeys,
+            current: dataFromWebSocket.currentSmallKeys
         },
     });
 }
@@ -113,15 +90,7 @@ export default (state: ReducerState, action: ReducerAction) => {
             if (action.subItem === 'total') {
                 smallKeys.total = computeNewNullableValue(action.value, state[action.dungeon].smallKeys[action.subItem], state[action.dungeon].smallKeys.found)  
             } else {
-                if (action.autoTracking) {
-                    if ((action.value === 'plus' && (!smallKeys.total || smallKeys.found < smallKeys.total)) ||
-                    (action.value === 'minus' && smallKeys.used > 0)) {
-                        smallKeys.found = computeNewValue(action.value, smallKeys.found)
-                        smallKeys.used = computeNewValue(action.value, smallKeys.used)
-                    }
-                } else {
-                    smallKeys[action.subItem] = computeNewValue(action.value, smallKeys[action.subItem])
-                }
+                smallKeys[action.subItem] = computeNewValue(action.value, smallKeys[action.subItem])
             }
             return {
                 ...state,
@@ -185,7 +154,7 @@ export default (state: ReducerState, action: ReducerAction) => {
             return DUNGEONS.reduce((acc, dungeon) => {
                 return ({
                     ...acc,
-                    [dungeon]: mergeDungeon(state[dungeon], action.data.data[dungeon], action.fromSram, dungeon)
+                    [dungeon]: mergeDungeon(state[dungeon], action.data.data[dungeon], dungeon)
                 });
             }, {} as ReducerState)
         }

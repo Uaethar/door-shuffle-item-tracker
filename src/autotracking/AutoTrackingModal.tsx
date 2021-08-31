@@ -67,45 +67,31 @@ type Props = {
     deviceList: Array<string>,
     handleCancel: VoidFunction,
     closeModal: VoidFunction,
-    connect: (device: string, trackSmallKeys: boolean) => void
+    connect: (device: string) => void
 }
 
 const AutoTrackingModal: React.FC<Props> = ({ open, handleCancel, closeModal, connect, deviceList }) => {
 
     const classes = useStyles()
     const [device, setDevice] = React.useState<number>()
-    const [trackSmallKeys, setTrackSmallKeys] = React.useState(true)
 
     const handleConnect = React.useCallback(() => {
         if (typeof device != 'undefined') {
-            connect(deviceList[device], trackSmallKeys)
+            connect(deviceList[device])
             closeModal()
         }
-    }, [deviceList, device, closeModal, trackSmallKeys, connect])
+    }, [deviceList, device, closeModal, connect])
 
     return <Modal
         isOpen={open}
         className={classes.modal}
         overlayClassName={classes.overlay}
         ariaHideApp={false}
-        onAfterClose={() => {
-            setDevice(undefined)
-            setTrackSmallKeys(true)
-        }}
+        onAfterClose={() => setDevice(undefined)}
     >
         <div className={classes.root}>
             <div className={classes.title}>Select device:</div>
             {deviceList.map((name, index) => <button key={index} className={classNames(classes.button, { [classes.selected]: device === index })} onClick={() => setDevice(index)}>{name}</button>)}
-            <div className={classes.smallKeys}>
-                <label htmlFor="trackSmallKeys">Track smallKeys</label>
-                <input
-                    type="checkbox"
-                    id="trackSmallKeys"
-                    name="trackSmallKeys"
-                    checked={trackSmallKeys}
-                    onChange={(event) => setTrackSmallKeys(event.target.checked)}
-                />
-            </div>
             <div className={classes.actions}>
                 <button
                     className={classes.button}

@@ -50,11 +50,9 @@ const AutoTrackingToggle: React.FC = () => {
     const connectTimeout = React.useRef<NodeJS.Timeout>()
 
     const [device, setDevice] = React.useState<string>()
-    const [trackSmallKeys, setTrackSmallKeys] = React.useState(true)
 
     const [connected, setConnected] = React.useState(false)
 
-    const checkSram = React.useRef(false)
     const getInfoInterval = React.useRef<NodeJS.Timeout>()
 
     const { actions: { setFromWebSocket, resetTracker }, setAutoTracking } = React.useContext(AppContext)
@@ -89,8 +87,8 @@ const AutoTrackingToggle: React.FC = () => {
         handleCloseModal()
     }, [handleCloseModal, ws, close])
 
-    const convertAndUpdateItems = React.useCallback((data: Int8Array, fromSram: boolean) => {
-        if (data.length !== 38) {
+    const convertAndUpdateItems = React.useCallback((data: Int8Array) => {
+        if (data.length !== 394) {
             close(ws, 'Received invalid data\nClosing connection')
         } else {
             const updatedData = new ItemsFromWebSocket()
@@ -100,12 +98,20 @@ const AutoTrackingToggle: React.FC = () => {
                     map: getItemForDungeon(data[offsets.map], dungeon),
                     compass: getItemForDungeon(data[offsets.compass], dungeon),
                     bigKey: getItemForDungeon(data[offsets.bigKey], dungeon),
-                    smallKeys: trackSmallKeys ? data[offsets.smallKeys] : undefined
+                    currentSmallKeys: data[offsets.currentSmallKeys],
+                    smallKeys: data[offsets.smallKeys]
                 })
+                if (dungeon === 'HC') {
+                    const sewersOffsets = getAddressOffsets('Sewers')
+                    updatedData.setData(dungeon, {
+                        currentSmallKeys: data[sewersOffsets.currentSmallKeys] + data[offsets.currentSmallKeys],
+                        smallKeys: data[sewersOffsets.smallKeys] + data[offsets.smallKeys]
+                    })
+                }
             })
-            setFromWebSocket(updatedData, fromSram)
+            setFromWebSocket(updatedData)
         }
-    }, [ws, setFromWebSocket, close, trackSmallKeys])
+    }, [ws, setFromWebSocket, close])
 
     React.useEffect(() => {
         if (device && ws && ws.readyState !== WebSocket.CLOSED) {
@@ -121,15 +127,13 @@ const AutoTrackingToggle: React.FC = () => {
             if (getInfoInterval.current) {
                 clearInterval(getInfoInterval.current)
             }
-            resetTracker(trackSmallKeys)
-            setAutoTracking(trackSmallKeys ? 'enabledSmallKeys' : 'enabled')
+            setAutoTracking('enabled')
 
-            // WRAM range: f5f000 ~ f5f500 (live update, only in game)
-            // SRAM range: e08000 ~ e08500 (updated when s&q, always accessible)
+            // range: f5f000 ~ f5f500
             getInfoInterval.current = setInterval(() => sendMessage(ws, {
                 Opcode: 'GetAddress',
                 Space: 'SNES',
-                Operands: [checkSram.current ? 'e08364' : 'f5f364', '26']
+                Operands: ['f5f364', '18A']
             }), 1000)
 
             ws.onmessage = message => {
@@ -139,19 +143,17 @@ const AutoTrackingToggle: React.FC = () => {
                     displayMessage(`Auto tracking enabled\nDevice: ${device}`)
                     const data = new Int8Array(fr.result as ArrayBuffer)
                     console.log('message received', data)
-                    // If all data are empty, we are probably in title screen or file select, so we check SRAM content instead
-                    if (!checkSram.current && data.every(value => value === 0)) {
-                        checkSram.current = true
-                    } else {
-                        // TODO convert data and add it to context
-                        convertAndUpdateItems(data, checkSram.current)
-                        checkSram.current = false
+                    // If the data we use are all zeros, we ignore the chunk (we are not in game)
+                    if (data.slice(0, 38).every(value => value === 0) && data.slice(380).every(value => value === 0)) {
+                        return
                     }
+                    convertAndUpdateItems(data)
+                    
                 }
                 fr.readAsArrayBuffer(result)
             }
         }
-    }, [device, ws, sendMessage, convertAndUpdateItems, resetTracker, setAutoTracking, displayMessage, trackSmallKeys])
+    }, [device, ws, sendMessage, convertAndUpdateItems, resetTracker, setAutoTracking, displayMessage])
 
     const connect = React.useCallback(() => {
         const socket = new WebSocket('ws://localhost:8080')
@@ -237,9 +239,8 @@ const AutoTrackingToggle: React.FC = () => {
             closeModal={handleCloseModal}
             handleCancel={handleCancelDeviceSelection}
             deviceList={deviceList}
-            connect={(device: string, trackSmallKeys: boolean) => {
+            connect={(device: string) => {
                 setDevice(device)
-                setTrackSmallKeys(trackSmallKeys)
             }}
         />
     </div>

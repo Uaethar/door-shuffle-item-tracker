@@ -53,6 +53,7 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
     const { state: { [dungeon]: { map, compass, bigKey, smallKeys, chests, entrances, required } }, actions, autoTracking } = React.useContext(AppContext)
     const { handleOpen } = React.useContext(RequiredModalContext)
 
+
     return <div className={classes.row}>
         <div className={classes.cell}>
             {dungeon}
@@ -94,33 +95,32 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
         </div>
         <div className={classNames(classes.cell, {
             [classes.cellAllFound]: smallKeys.found === smallKeys.total,
-            [classes.cellAllUsed]: smallKeys.used !== 0 && smallKeys.found === smallKeys.used
+            [classes.cellAllUsed]: smallKeys.total != null && smallKeys.current === 0
         })}>
             <Cell
                 onLeftClick={() => {
                     if (smallKeys.total === null || smallKeys.found < smallKeys.total) {
-                        actions.addSmallKey(dungeon, 'found', autoTracking === 'enabledSmallKeys')
+                        actions.addSmallKey(dungeon, 'found')
+                        actions.addSmallKey(dungeon, 'current')
                     }
                 }}
-                onRightClick={() => actions.removeSmallKey(dungeon, 'found', autoTracking === 'enabledSmallKeys')}
+                onRightClick={() => actions.removeSmallKey(dungeon, 'found')}
             >
                 {smallKeys.found}
             </Cell>
             <Cell
-                onLeftClick={() => actions.addSmallKey(dungeon, 'total', autoTracking === 'enabledSmallKeys')}
-                onRightClick={() => actions.removeSmallKey(dungeon, 'total', autoTracking === 'enabledSmallKeys')}
+                onLeftClick={() => actions.addSmallKey(dungeon, 'total')}
+                onRightClick={() => actions.removeSmallKey(dungeon, 'total')}
             >
                 {smallKeys.total !== null ? smallKeys.total : '?'}
             </Cell>
             <Cell
                 onLeftClick={() => {
-                    if (smallKeys.used < smallKeys.found) {
-                        actions.addSmallKey(dungeon, 'used', autoTracking === 'enabledSmallKeys')
-                    }
+                    actions.addSmallKey(dungeon, 'current')
                 }}
-                onRightClick={() => actions.removeSmallKey(dungeon, 'used', autoTracking === 'enabledSmallKeys')}
+                onRightClick={() => actions.removeSmallKey(dungeon, 'current')}
             >
-                {smallKeys.used}
+                {smallKeys.current}
             </Cell>
         </div>
         <div className={classNames(classes.cell, { [classes.cellAllFound]: chests.found === chests.total })}>

@@ -2,7 +2,7 @@ import { Dungeon, WebSocketItem } from "../config/types"
 
 export const readBit = (value: number, position: number): boolean => {
     if (position < 0 || position >= 8) {
-        throw 'position out of range'
+        throw new Error('position out of range')
     }
     return (value & (1 << position)) !== 0
 }
@@ -33,98 +33,119 @@ export const getItemForDungeon = (value: number, dungeon: Dungeon): boolean => {
     }
 }
 
-export const getAddressOffsets = (dungeon: Dungeon): Record<WebSocketItem, number> => {
+export const getAddressOffsets = (dungeon: Dungeon | 'Sewers'): Record<WebSocketItem, number> => {
     switch (dungeon) {
         case 'HC':
             return {
                 map: 5,
                 compass: 1,
                 bigKey: 3,
-                smallKeys: 25
+                smallKeys: 380,
+                currentSmallKeys: 25
+            }
+        case 'Sewers':
+            return {
+                map: 5,
+                compass: 1,
+                bigKey: 3,
+                smallKeys: 381,
+                currentSmallKeys: 26
             }
         case 'EP':
             return {
                 map: 5,
                 compass: 1,
                 bigKey: 3,
-                smallKeys: 26
+                smallKeys: 382,
+                currentSmallKeys: 26
             }
         case 'DP':
             return {
                 map: 5,
                 compass: 1,
                 bigKey: 3,
-                smallKeys: 27
+                smallKeys: 383,
+                currentSmallKeys: 27
             }
         case 'AT':
             return {
                 map: 5,
                 compass: 1,
                 bigKey: 3,
-                smallKeys: 28
+                smallKeys: 384,
+                currentSmallKeys: 28
             }
         case 'SP':
             return {
                 map: 5,
                 compass: 1,
                 bigKey: 3,
-                smallKeys: 29
+                smallKeys: 385,
+                currentSmallKeys: 29
             }
         case 'POD':
             return {
                 map: 5,
                 compass: 1,
                 bigKey: 3,
-                smallKeys: 30
+                smallKeys: 386,
+                currentSmallKeys: 30
             }
         case 'MM':
             return {
                 map: 5,
                 compass: 1,
                 bigKey: 3,
-                smallKeys: 31
+                smallKeys: 387,
+                currentSmallKeys: 31
             }
         case 'SW':
             return {
                 map: 4,
                 compass: 0,
                 bigKey: 2,
-                smallKeys: 32
+                smallKeys: 388,
+                currentSmallKeys: 32
             }
         case 'IP':
             return {
                 map: 4,
                 compass: 0,
                 bigKey: 2,
-                smallKeys: 33
+                smallKeys: 389,
+                currentSmallKeys: 33
             }
         case 'TOH':
             return {
                 map: 4,
                 compass: 0,
                 bigKey: 2,
-                smallKeys: 34
+                smallKeys: 390,
+                currentSmallKeys: 34
             }
         case 'TT':
             return {
                 map: 4,
                 compass: 0,
                 bigKey: 2,
-                smallKeys: 35
+                smallKeys: 391,
+                currentSmallKeys: 35
             }
         case 'TR':
             return {
                 map: 4,
                 compass: 0,
                 bigKey: 2,
-                smallKeys: 36
+                smallKeys: 392,
+                currentSmallKeys: 36
             }
         case 'GT':
             return {
                 map: 4,
                 compass: 0,
                 bigKey: 2,
-                smallKeys: 37
+                smallKeys: 393,
+                currentSmallKeys: 37
             }
     }
 }

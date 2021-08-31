@@ -71,7 +71,7 @@ const Header: React.FC<{}> = () => {
       <div className={classes.headerSubCellGroup}>
         <div className={classes.headerSubCell}>F</div>
         <div className={classes.headerSubCell}>T</div>
-        <div className={classes.headerSubCell}>U</div>
+        <div className={classes.headerSubCell}>C</div>
       </div>
     </div>
     <div className={classes.headerCell}>

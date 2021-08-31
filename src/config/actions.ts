@@ -25,20 +25,18 @@ export const toggleBigKeyUnaivalable = (dispatch: Dispatch<ReducerAction>) => (d
     value: 'unavailable'
 })
 
-export const addSmallKey = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon, subItem: 'found' | 'total' | 'used', autoTracking: boolean) => dispatch({
+export const addSmallKey = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon, subItem: 'found' | 'total' | 'current') => dispatch({
     type: 'smallKey',
     dungeon,
     subItem,
-    value: 'plus',
-    autoTracking
+    value: 'plus'
 })
 
-export const removeSmallKey = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon, subItem: 'found' | 'total' | 'used', autoTracking: boolean) => dispatch({
+export const removeSmallKey = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon, subItem: 'found' | 'total' | 'current') => dispatch({
     type: 'smallKey',
     dungeon,
     subItem,
     value: 'minus',
-    autoTracking
 })
 
 export const addChest = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dungeon, subItem: 'found' | 'total') => dispatch({
@@ -72,10 +70,9 @@ export const setRequired = (dispatch: Dispatch<ReducerAction>) => (dungeon: Dung
     value: required
 })
 
-export const setFromWebSocket = (dispatch: Dispatch<ReducerAction>) => (data: ItemsFromWebSocket, fromSram: boolean) => dispatch({
+export const setFromWebSocket = (dispatch: Dispatch<ReducerAction>) => (data: ItemsFromWebSocket) => dispatch({
     type: 'fromWebSocket',
-    data,
-    fromSram
+    data
 })
 
 export const resetTracker = (dispatch: Dispatch<ReducerAction>) => (resetSmallKeys: boolean) => dispatch({
