@@ -49,7 +49,7 @@ export const getAddressOffsets = (dungeon: Dungeon | 'Sewers'): Record<WebSocket
                 compass: 1,
                 bigKey: 3,
                 smallKeys: 381,
-                currentSmallKeys: 26
+                currentSmallKeys: 24
             }
         case 'EP':
             return {
