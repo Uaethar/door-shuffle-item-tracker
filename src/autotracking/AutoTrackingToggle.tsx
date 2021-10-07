@@ -104,7 +104,7 @@ const AutoTrackingToggle: React.FC = () => {
                 if (dungeon === 'HC') {
                     const sewersOffsets = getAddressOffsets('Sewers')
                     updatedData.setData(dungeon, {
-                        currentSmallKeys: data[sewersOffsets.currentSmallKeys] + data[offsets.currentSmallKeys],
+                        currentSmallKeys: data[offsets.currentSmallKeys],
                         smallKeys: data[sewersOffsets.smallKeys] + data[offsets.smallKeys]
                     })
                 }
