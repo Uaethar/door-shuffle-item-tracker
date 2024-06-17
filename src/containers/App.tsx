@@ -1,5 +1,4 @@
 import React from 'react';
-import { createUseStyles } from 'react-jss';
 import { Dungeon, DUNGEONS, RequiredItem } from '../config/types'
 import Header from '../components/Header'
 import reducer, { init } from '../config/reducer';
@@ -8,21 +7,20 @@ import { AppContext, AutoTrackingMode, RequiredModalContext } from '../config/co
 import Row from '../components/Row';
 import RequiredItemModal from '../components/RequiredItemModal';
 import AutoTrackingToggle from '../autotracking/AutoTrackingToggle';
+import { styled } from 'styled-components';
 
-const useStyles = createUseStyles({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    fontSize: 12,
-    fontFamily: 'monospace',
-    width: 'fit-content',
-    backgroundColor: '#404040',
-    color: '#FFF',
-  }
-})
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    font-family: monospace;
+    width: fit-content;
+    background-color: #404040;
+    color: #FFF;
+`
 
 const App: React.FC<{}> = () => {
-  const classes = useStyles()
   const [state, dispatch] = React.useReducer(reducer, init)
 
   const toggleMap = React.useCallback(actions.toggleMap(dispatch), [])
@@ -44,7 +42,7 @@ const App: React.FC<{}> = () => {
   const [requiredModal, setRequiredModal] = React.useState<Array<RequiredItem>>([])
   const [autoTracking, setAutoTracking] = React.useState<AutoTrackingMode>('disabled')
 
-  return <div className={classes.root}>
+  return <Container>
     <Header />
     <AppContext.Provider value={{
       state,
@@ -86,7 +84,7 @@ const App: React.FC<{}> = () => {
         <AutoTrackingToggle />
       </RequiredModalContext.Provider>
     </AppContext.Provider>
-  </div>
+  </Container>
 }
 
 

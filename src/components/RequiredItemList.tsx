@@ -1,34 +1,34 @@
 import React from 'react'
-import { createUseStyles } from 'react-jss'
 import { RequiredItem } from '../config/types'
-import Item from './Item'
-import classNames from 'classnames'
+import ItemImage from './ItemImage'
+import { styled } from 'styled-components'
 
-const useStyles = createUseStyles({
-    root: {
-        width: 96,
-        fontSize: 12,
-        height: '100%',
-        display: 'flex',
-        justifyContent: 'flex-start',
-        cursor: 'pointer',
-        '&:hover': {
-            backgroundColor: 'rgba(255, 255, 255, 0.1)'
-        }
-    },
-    item: {
-        display: 'flex',
-        width: 24,
-        height: 24,
-        justifyContent: 'center',
-        alignItems: 'center',
-        lineHeight: '10px',
-        textAlign: 'center'
-    },
-    etc: {
-        marginTop: -3
+
+const Container = styled.div`
+    width: 96px;
+    font-size: 12px;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    cursor: pointer;
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
     }
-}, { name: 'RequiredItemList' })
+`
+
+const Item = styled.div`
+    display: flex;
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    line-height: 10px;
+    text-align: center;
+`
+
+const ItemEtc = styled(Item)`
+    margin-top: -3px
+`
 
 type Props = {
     required: Array<RequiredItem>,
@@ -36,24 +36,22 @@ type Props = {
 }
 
 const RequiredItemList: React.FC<Props> = ({ required, openRequiredModal }) => {
-    const classes = useStyles()
 
     const requiredCount = React.useMemo(() => required.length, [required])
 
-    return <div
-        className={classes.root}
+    return <Container
         onClick={() => openRequiredModal()}
         onContextMenu={(event) => event.preventDefault()}
     >
         {(requiredCount <= 4 ? required : required.slice(0, 3)).map((item, index) =>
-            <div className={classes.item} key={index}>
-                <Item item={item} />
-            </div>
+            <Item key={index}>
+                <ItemImage item={item} />
+            </Item>
         )}
-        {requiredCount > 4 && <div className={classNames(classes.item, classes.etc)}>
+        {requiredCount > 4 && <ItemEtc>
             ...
-        </div>}
-    </div>
+        </ItemEtc>}
+    </Container>
 }
 
 export default RequiredItemList

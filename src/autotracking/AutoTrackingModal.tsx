@@ -1,66 +1,44 @@
 import React from 'react'
-import Modal from 'react-modal'
-import { createUseStyles } from 'react-jss'
-import classNames from 'classnames'
+import { styled } from 'styled-components'
+import Modal from 'styled-react-modal'
 
-const useStyles = createUseStyles({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        fontSize: 12,
-        fontFamily: 'monospace',
-        color: '#fff'
-    },
-    modal: {
-        position: 'absolute',
-        top: 86,
-        left: 66,
-        width: 200,
-        backgroundColor: '#404040',
-        border: '1px solid #606060',
-        outline: 'none',
-        borderRadius: 5,
-        padding: 5
-    },
-    overlay: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(35,35,35,0.75)'
-    },
-    title: {
-        marginBottom: 5
-    },
-    listElement: {
-        width: '100%'
-    },
-    selected: {
-        borderColor: 'rgba(111,249,221, 0.7)'
-    },
-    smallKeys: {
-        margin: 5,
-        display: 'flex',
-        alignItems: 'center'
-    },
-    actions: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        marginTop: 10
-    },
-    button: {
-        height: 26,
-        margin: 2,
-        padding: 3,
-        cursor: 'pointer',
-        backgroundColor: '#606060',
-        color: '#fff',
-        outline: 'none',
-        tabIndex: -1
-    }
-}, { name: 'RequiredItemModal' })
+const StyledModal = Modal.styled`
+    position: absolute;
+    top: 86px;
+    left: 66px;
+    width: 200px;
+    background-color: #404040;
+    border: 1px solid #606060;
+    outline: none;
+    border-radius: 5px;
+    padding: 5px;
+`
+
+const Content = styled.div`
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    font-family: monospace;
+    color: #fff
+`
+
+const Actions = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 10px;
+`
+
+const Button = styled.button<{ selected?: boolean }>`
+    height: 26px;
+    margin: 2px;
+    padding: 3px;
+    cursor: pointer;
+    background-color: #606060;
+    color: #fff;
+    outline: none;
+    border-color: ${props => props.selected ? 'rgba(111,249,221, 0.7)' : undefined};
+`
 
 type Props = {
     open: boolean,
@@ -72,7 +50,6 @@ type Props = {
 
 const AutoTrackingModal: React.FC<Props> = ({ open, handleCancel, closeModal, connect, deviceList }) => {
 
-    const classes = useStyles()
     const [device, setDevice] = React.useState<number>()
 
     const handleConnect = React.useCallback(() => {
@@ -82,34 +59,30 @@ const AutoTrackingModal: React.FC<Props> = ({ open, handleCancel, closeModal, co
         }
     }, [deviceList, device, closeModal, connect])
 
-    return <Modal
+    return <StyledModal
         isOpen={open}
-        className={classes.modal}
-        overlayClassName={classes.overlay}
         ariaHideApp={false}
         onAfterClose={() => setDevice(undefined)}
     >
-        <div className={classes.root}>
-            <div className={classes.title}>Select device:</div>
-            {deviceList.map((name, index) => <button key={index} className={classNames(classes.button, { [classes.selected]: device === index })} onClick={() => setDevice(index)}>{name}</button>)}
-            <div className={classes.actions}>
-                <button
-                    className={classes.button}
+        <Content>
+            <h5>Select device:</h5>
+            {deviceList.map((name, index) => <Button key={index} selected={device === index} onClick={() => setDevice(index)}>{name}</Button>)}
+            <Actions>
+                <Button
+                    tabIndex={-1}
                     onClick={() => handleCancel()}
                 >
                     CANCEL
-                </button>
-                <button
-                    className={classes.button}
+                </Button>
+                <Button
                     disabled={typeof device === 'undefined'}
                     onClick={() => handleConnect()}
                 >
                     CONNECT
-                </button>
-            </div>
-        </div>
-
-    </Modal>
+                </Button>
+            </Actions>
+        </Content>
+    </StyledModal>
 }
 
 export default AutoTrackingModal

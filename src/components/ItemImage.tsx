@@ -25,7 +25,7 @@ type Props = {
 }
 
 
-const Item: React.FC<Props> = ({ item, height = 20 }) => {
+const ItemImage: React.FC<Props> = ({ item, height = 20 }) => {
     switch (item) {
         case 'bombos': return <img src={bombos} alt="" height={height} />
         case 'boots': return <img src={boots} alt="" height={height} />
@@ -51,4 +51,4 @@ const Item: React.FC<Props> = ({ item, height = 20 }) => {
     }
 }
 
-export default Item
+export default ItemImage

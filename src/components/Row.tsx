@@ -1,46 +1,40 @@
 import React from 'react'
-import { createUseStyles } from 'react-jss'
 import { AppContext, RequiredModalContext } from '../config/context'
 import { Dungeon } from '../config/types'
 import Cell from './Cell'
 import check from '../img/check.svg'
 import cross from '../img/cross.svg'
-import classNames from 'classnames'
 import RequiredItemList from './RequiredItemList'
+import { styled } from 'styled-components'
 
-const useStyles = createUseStyles({
-    row: {
-        display: 'flex',
-        flexDirection: 'row',
-        height: 24,
-        backgroundColor: ({ stripped }) => stripped ? '#505050' : '#404040',
-        '&:hover': {
-            backgroundColor: '#606060'
-        },
-        "&:not(:last-child)": {
-            borderBottom: '1px solid #fff'
-        }
-    },
-    cell: {
-        minWidth: 24,
-        alignText: 'center',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        "&:not(:last-child)": {
-            borderRight: '1px solid #fff'
-
-        }
-    },
-    cellAllUsed: {
-        backgroundColor: 'rgba(200, 0, 0, 0.25)'
-        // color: 'rgba(250, 50, 50)'
-    },
-    cellAllFound: {
-        backgroundColor: 'rgba(0, 200, 0, 0.25)'
-        // color: 'rgba(50, 200, 50)'
+const Container = styled.div<{ stripped: boolean }>`
+    display: flex;
+    flex-direction: row;
+    height: 24px;
+    background-color: ${props => props.stripped ? '#505050' : '#404040'};
+    &:hover {
+        background-color: '#606060'
     }
-}, { name: 'Row' })
+    &:not(:last-child) {
+        border-bottom: 1px solid #fff
+    }
+`
+
+const CellGroup = styled.div<{ allFound?: boolean; allUsed?: boolean }>`
+    min-width: 24px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:not(:last-child) {
+        border-right: 1px solid #fff;
+    }
+    background-color: ${props => {
+        if (props.allFound) return 'rgba(0, 200, 0, 0.25)'
+        if (props.allUsed) return 'rgba(200, 0, 0, 0.25)'
+        return undefined
+    }}
+`
 
 type Props = {
     dungeon: Dungeon,
@@ -48,17 +42,16 @@ type Props = {
 }
 
 const Row: React.FC<Props> = ({ dungeon, stripped }) => {
-    const classes = useStyles({ stripped })
 
     const { state: { [dungeon]: { map, compass, bigKey, smallKeys, chests, entrances, required } }, actions, autoTracking } = React.useContext(AppContext)
     const { handleOpen } = React.useContext(RequiredModalContext)
 
 
-    return <div className={classes.row}>
-        <div className={classes.cell}>
+    return <Container stripped={stripped}>
+        <CellGroup>
             {dungeon}
-        </div>
-        <div className={classNames(classes.cell, { [classes.cellAllFound]: entrances.found === entrances.max })}>
+        </CellGroup>
+        <CellGroup allFound={entrances.found === entrances.max}>
             <Cell
                 onLeftClick={() => {
                     if (entrances.found < entrances.max) {
@@ -69,22 +62,22 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
             >
                 {entrances.found}
             </Cell>
-        </div>
-        <div className={classes.cell}>
+        </CellGroup>
+        <CellGroup>
             <Cell
                 onLeftClick={() => autoTracking === 'disabled' && actions.toggleMap(dungeon)}
             >
                 {map && <img src={check} alt="" width={16} />}
             </Cell>
-        </div>
-        <div className={classes.cell}>
+        </CellGroup>
+        <CellGroup>
             <Cell
                 onLeftClick={() => autoTracking === 'disabled' && actions.toggleCompass(dungeon)}
             >
                 {compass && <img src={check} alt="" width={16} />}
             </Cell>
-        </div>
-        <div className={classes.cell}>
+        </CellGroup>
+        <CellGroup>
             <Cell
                 onLeftClick={() => autoTracking === 'disabled' && actions.toggleBigKeyFound(dungeon)}
                 onRightClick={() => !(autoTracking !== 'disabled' && bigKey === 'found') && actions.toggleBigKeyUnaivalable(dungeon)}
@@ -92,11 +85,11 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
                 {bigKey === 'found' && <img src={check} alt="" width={16} />}
                 {bigKey === 'unavailable' && <img src={cross} alt="" width={16} />}
             </Cell>
-        </div>
-        <div className={classNames(classes.cell, {
-            [classes.cellAllFound]: smallKeys.found === smallKeys.total,
-            [classes.cellAllUsed]: smallKeys.total != null && smallKeys.current === 0
-        })}>
+        </CellGroup>
+        <CellGroup
+            allFound={smallKeys.found === smallKeys.total}
+            allUsed={smallKeys.total != null && smallKeys.current === 0}
+        >
             <Cell
                 onLeftClick={() => {
                     if (smallKeys.total === null || smallKeys.found < smallKeys.total) {
@@ -122,8 +115,8 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
             >
                 {smallKeys.current}
             </Cell>
-        </div>
-        <div className={classNames(classes.cell, { [classes.cellAllFound]: chests.found === chests.total })}>
+        </CellGroup>
+        <CellGroup allFound={chests.found === chests.total}>
             <Cell
                 onLeftClick={() => {
                     if (chests.total === null || chests.found < chests.total) {
@@ -140,11 +133,11 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
             >
                 {chests.total !== null ? chests.total : '?'}
             </Cell>
-        </div>
-        <div className={classes.cell}>
+        </CellGroup>
+        <CellGroup>
             <RequiredItemList required={required} openRequiredModal={() => handleOpen(dungeon, required)} />
-        </div>
-    </div>
+        </CellGroup>
+    </Container>
 }
 
 export default Row

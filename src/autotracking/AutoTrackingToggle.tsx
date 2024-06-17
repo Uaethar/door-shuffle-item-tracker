@@ -1,41 +1,38 @@
 import React from 'react'
-import { createUseStyles } from 'react-jss'
 import { AppContext } from '../config/context'
 import { DUNGEONS, ItemsFromWebSocket } from '../config/types'
 import AutoTrackingModal from './AutoTrackingModal'
 import { getAddressOffsets, getItemForDungeon } from './utils'
+import { styled } from 'styled-components'
 
-const useStyles = createUseStyles({
-    root: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        margin: 3
-    },
-    message: {
-        marginRight: 5,
-        textAlign: 'right'
-    },
-    button: {
-        height: 26,
-        margin: 2,
-        padding: 3,
-        cursor: 'pointer',
-        backgroundColor: '#606060',
-        color: '#fff',
-        outline: 'none',
-        tabIndex: -1
-    }
-})
+const Container = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 3px;
+`
+
+const Message = styled.div`
+    margin-right: 5px;
+    text-align: right;
+`
+
+const Button = styled.button`
+    height: 26px;
+    margin: 2px;
+    padding: 3px;
+    cursor: pointer;
+    background-color: #606060;
+    color: #fff;
+    outline: none;
+`
 
 const AutoTrackingToggle: React.FC = () => {
-
-    const classes = useStyles()
 
     const [ws, setWs] = React.useState<WebSocket>()
     const [message, setMessage] = React.useState("Auto tracking disabled")
     const error = React.useRef("")
-    const resetMessageTimeout = React.useRef<NodeJS.Timeout>()
+    const resetMessageTimeout = React.useRef<ReturnType<typeof setTimeout>>()
     const displayMessage = React.useCallback((message: string, autoHide: boolean = false) => {
         if (resetMessageTimeout.current) {
             clearTimeout(resetMessageTimeout.current)
@@ -156,11 +153,11 @@ const AutoTrackingToggle: React.FC = () => {
     }, [device, ws, sendMessage, convertAndUpdateItems, resetTracker, setAutoTracking, displayMessage])
 
     const connect = React.useCallback(() => {
-        const socket = new WebSocket('ws://localhost:8080')
+        const socket = new WebSocket('ws://localhost:23074')
         setConnecting(true)
 
         socket.onopen = () => {
-            displayMessage('Connecting to Qusb2snes')
+            displayMessage('Connecting to SNI')
 
             sendMessage(socket, {
                 Opcode: 'DeviceList',
@@ -168,7 +165,7 @@ const AutoTrackingToggle: React.FC = () => {
             })
             connectTimeout.current = setTimeout(() => {
                 setConnecting(false)
-                close(socket, 'Connection refused\nPlease ensure that Qusb2snes is running')
+                close(socket, 'Connection refused\nPlease ensure that SNI is running')
             }, 5000)
         }
 
@@ -188,7 +185,7 @@ const AutoTrackingToggle: React.FC = () => {
                     close(socket, 'No device detected\nClosing connection')
                 }
             } catch (e) {
-                console.error(`error while parsing message from Qusb2snes. message payload: ${message.data}`, e)
+                console.error(`error while parsing message from SNI. message payload: ${message.data}`, e)
                 close(socket, 'Closing connection due to error')
             }
         }
@@ -200,7 +197,7 @@ const AutoTrackingToggle: React.FC = () => {
                 err.returnValue,
                 'Closing socket'
             )
-            error.current = 'Connection refused\nPlease ensure that Qusb2snes is running'
+            error.current = 'Connection refused\nPlease ensure that SNI is running'
             socket.close()
         }
 
@@ -210,7 +207,7 @@ const AutoTrackingToggle: React.FC = () => {
                 clearInterval(getInfoInterval.current)
                 getInfoInterval.current = undefined
             }
-            displayMessage(error.current || 'Disconnected from Qusb2snes', true)
+            displayMessage(error.current || 'Disconnected from SNI', true)
             error.current = ''
             setConnected(false)
             setConnecting(false)
@@ -220,20 +217,20 @@ const AutoTrackingToggle: React.FC = () => {
         }
     }, [sendMessage, close, setAutoTracking, displayMessage, error, handleOpenModal])
 
-    return <div className={classes.root}>
-        <div className={classes.message}>{message.split("\n").map((line, index) => {
+    return <Container>
+        <Message>{message.split("\n").map((line, index) => {
             if (index !== 0) {
                 return <React.Fragment key={index}><br />{line}</React.Fragment>
             }
             return line
-        })}</div>
-        <button
-            className={classes.button}
+        })}</Message>
+        <Button
+            tabIndex={-1}
             disabled={connecting}
             onClick={() => connected ? close(ws) : connect()}
         >
             {connected ? 'DISABLE' : 'ENABLE'}
-        </button>
+        </Button>
         <AutoTrackingModal
             open={openModal}
             closeModal={handleCloseModal}
@@ -243,7 +240,7 @@ const AutoTrackingToggle: React.FC = () => {
                 setDevice(device)
             }}
         />
-    </div>
+    </Container>
 }
 
 export default AutoTrackingToggle

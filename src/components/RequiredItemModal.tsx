@@ -1,82 +1,87 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { AppContext, RequiredModalContext } from '../config/context'
 import { RequiredItem } from '../config/types'
-import Modal from 'react-modal'
-import { createUseStyles } from 'react-jss'
-import Item from './Item'
-import classNames from 'classnames'
+import ItemImage from './ItemImage'
 import check from '../img/check.svg'
 import cross from '../img/cross.svg'
+import Modal from 'styled-react-modal'
+import { styled } from 'styled-components'
 
-const useStyles = createUseStyles({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        fontSize: 12,
-        fontFamily: 'monospace',
-        color: '#fff'
-    },
-    row: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center'
-    },
-    item: {
-        display: 'flex',
-        width: 34,
-        height: 34,
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 2,
-        borderRadius: 3,
-        cursor: 'pointer',
-        textAlign: 'center'
-    },
-    selected: {
-        backgroundColor: 'rgba(111,249,221, 0.7)'
-    },
-    modal: {
-        position: 'absolute',
-        top: 86,
-        left: 66,
-        width: 200,
-        backgroundColor: '#404040',
-        border: '1px solid #606060',
-        outline: 'none',
-        borderRadius: 5,
-        padding: 5
-    },
-    overlay: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(35,35,35,0.75)'
-    },
-    actions: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        marginTop: 10
-    },
-    button: {
-        height: 26,
-        margin: 2,
-        padding: 3,
-        cursor: 'pointer',
-        backgroundColor: '#606060',
-        color: '#fff',
-        outline: 'none',
-        tabIndex: -1
-    }
-}, { name: 'RequiredItemModal' })
+const StyledModal = Modal.styled`
+    position: absolute;
+    top: 86px;
+    left: 66px;
+    width: 200px; 
+    background-color: #404040;
+    border: 1px solid #606060;
+    outline: none;
+    border-radius: 5px;
+    padding: 5px;
+`
 
-type Props = {}
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    font-family: monospace;
+    color: #fff;
+`
 
-const RequiredItemModal: React.FC<Props> = () => {
+const Row = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+`
 
-    const classes = useStyles()
+const Actions = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 10px;
+`
+
+const Button = styled.button`
+    height: 26px;
+    margin: 2px;
+    padding: 3px;
+    cursor: pointer;
+    background-color: #606060;
+    color: #fff;
+    outline: none;
+`
+
+const Item = styled.button<{selected: boolean}>`
+    display: flex;
+    width: 34px;
+    height: 34px;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border-color: transparent;
+    margin: 2px;
+    border-radius: 3px;
+    cursor: pointer;
+    text-align: center;
+    background-color: ${props => props.selected ? 'rgba(111,249,221, 0.7)' : undefined}
+`
+
+type RequiredItemProps = {
+    item: RequiredItem,
+    selected: boolean,
+    onClick: (item: RequiredItem) => void
+}
+
+const RequiredItemButton: React.FC<RequiredItemProps> = ({ item, selected, onClick }) => {
+
+    const handleClick = useCallback(() => onClick(item), [onClick, item])
+
+    return <Item onClick={handleClick} selected={selected}>
+        <ItemImage item={item} height={28} />
+    </Item>
+
+}
+
+const RequiredItemModal: React.FC = () => {
 
     const { dungeon, required, open, handleClose } = React.useContext(RequiredModalContext)
     const { actions } = React.useContext(AppContext)
@@ -89,83 +94,79 @@ const RequiredItemModal: React.FC<Props> = () => {
 
 
     const toggleItemSelected = React.useCallback((selectedItem: RequiredItem) => {
-        if (selectedItems.includes(selectedItem)) {
-            setSelectedItems(selectedItems => selectedItems.filter(item => item !== selectedItem))
-        } else {
-            setSelectedItems(selectedItems => [...selectedItems, selectedItem])
-        }
-    }, [setSelectedItems, selectedItems])
+        setSelectedItems(selectedItems => {
+            if (selectedItems.includes(selectedItem)) {
+                return selectedItems.filter(item => item !== selectedItem)
+            }
+            return [...selectedItems, selectedItem]
+        })
+    }, [setSelectedItems])
 
-    const renderItem = React.useCallback((item: RequiredItem) => <div
-        className={classNames(classes.item, { [classes.selected]: selectedItems.includes(item) })}
-        onClick={() => toggleItemSelected(item)}
-        onContextMenu={() => { }}
-    >
-        <Item item={item} height={28} />
-    </div>, [selectedItems, classes, toggleItemSelected])
+    const getButtonProps = useCallback((item: RequiredItem): RequiredItemProps => ({
+        item,
+        onClick: toggleItemSelected,
+        selected: selectedItems.includes(item)
+    }), [toggleItemSelected, selectedItems])
 
-    return <Modal
+    return <StyledModal
         isOpen={open}
-        className={classes.modal}
-        overlayClassName={classes.overlay}
         ariaHideApp={false}
     >
         {dungeon && <>
-            <div className={classes.root}>
-                <div className={classes.row}>
-                    {renderItem("sword")}
-                    {renderItem("lantern")}
-                    {renderItem("firerod")}
-                    {renderItem("bombos")}
-                    {renderItem("torch")}
-                </div>
-                <div className={classes.row}>
-                    {renderItem("bombs")}
-                    {renderItem("bow")}
-                    {renderItem("hookshot")}
-                    {renderItem("hammer")}
-                    {renderItem("somaria")}
-                </div>
-                <div className={classes.row}>
-                    {renderItem("glove")}
-                    {renderItem("flippers")}
-                    {renderItem("boots")}
-                    {renderItem("bigKey")}
-                    {renderItem("smallKey")}
-                </div>
-                <div className={classes.row}>
-                    {renderItem("blueSwitch")}
-                    {renderItem("redSwitch")}
-                    {renderItem("dam")}
-                    {renderItem("attic")}
-                    {renderItem("other")}
-                </div>
-            </div>
-            <div className={classes.actions}>
-                <button
-                    className={classes.button}
+            <Container>
+                <Row>
+                    <RequiredItemButton {...getButtonProps('sword')} />
+                    <RequiredItemButton {...getButtonProps('lantern')} />
+                    <RequiredItemButton {...getButtonProps('firerod')} />
+                    <RequiredItemButton {...getButtonProps('bombos')} />
+                    <RequiredItemButton {...getButtonProps('torch')} />
+                </Row>
+                <Row>
+                    <RequiredItemButton {...getButtonProps('bombs')} />
+                    <RequiredItemButton {...getButtonProps('bow')} />
+                    <RequiredItemButton {...getButtonProps('hookshot')} />
+                    <RequiredItemButton {...getButtonProps('hammer')} />
+                    <RequiredItemButton {...getButtonProps('somaria')} />
+                </Row>
+                <Row>
+                    <RequiredItemButton {...getButtonProps('glove')} />
+                    <RequiredItemButton {...getButtonProps('flippers')} />
+                    <RequiredItemButton {...getButtonProps('boots')} />
+                    <RequiredItemButton {...getButtonProps('bigKey')} />
+                    <RequiredItemButton {...getButtonProps('smallKey')} />
+                </Row>
+                <Row>
+                    <RequiredItemButton {...getButtonProps('blueSwitch')} />
+                    <RequiredItemButton {...getButtonProps('redSwitch')} />
+                    <RequiredItemButton {...getButtonProps('dam')} />
+                    <RequiredItemButton {...getButtonProps('attic')} />
+                    <RequiredItemButton {...getButtonProps('other')} />
+                </Row>
+            </Container>
+            <Actions>
+                <Button
+                    tabIndex={-1}
                     onClick={() => setSelectedItems([])}
                 >
                     CLEAR
-                </button>
-                <button
-                    className={classes.button}
+                </Button>
+                <Button
+                    tabIndex={-1}
                     onClick={() => handleClose()}
                 >
                     <img src={cross} alt="" width={16} />
-                </button>
-                <button
-                    className={classes.button}
+                </Button>
+                <Button
                     onClick={() => {
                         actions.setRequired(dungeon!, selectedItems)
                         handleClose()
                     }}
                 >
                     <img src={check} alt="" width={16} />
-                </button>
-            </div>
+                </Button>
+            </Actions>
         </>}
-    </Modal>
+    </StyledModal>
 }
 
 export default RequiredItemModal

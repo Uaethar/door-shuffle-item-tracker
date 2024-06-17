@@ -1,39 +1,35 @@
 import React from 'react';
-import { createUseStyles } from 'react-jss';
+import { styled } from 'styled-components'
 
-const useStyles = createUseStyles({
-    root: {
-        width: 24,
-        fontSize: 16,
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        '&:hover': {
-            backgroundColor: 'rgba(255, 255, 255, 0.1)'
-        }
-    }
-}, { name: 'Cell' })
+const StyledCell = styled.div`
+  width: 24px;
+  font-size: 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1)
+  }
+`
 
 type Props = {
-    onLeftClick: () => void,
+    onLeftClick?: () => void,
     onRightClick?: () => void,
 }
 
-const Cell: React.FC<Props> = ({ onLeftClick, onRightClick = () => { }, children }) => {
-    const classes = useStyles()
+const Cell: React.FC<Props> = ({ onLeftClick, onRightClick, children }) => {
 
-    return <div
-        className={classes.root}
+    return <StyledCell
         onClick={onLeftClick}
         onContextMenu={(event) => {
             event.preventDefault()
-            onRightClick()
+            onRightClick?.()
         }}
     >
         {children}
-    </div>
+    </StyledCell>
 }
 
 export default Cell

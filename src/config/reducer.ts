@@ -65,7 +65,7 @@ const mergeDungeon = (dataFromState: DungeonItems, dataFromWebSocket: DungeonIte
     });
 }
 
-export default (state: ReducerState, action: ReducerAction) => {
+const reducer = (state: ReducerState, action: ReducerAction) => {
     switch (action.type) {
         case 'toggle': {
             return {
@@ -162,3 +162,5 @@ export default (state: ReducerState, action: ReducerAction) => {
             return state
     }
 }
+
+export default reducer

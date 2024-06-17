@@ -3,7 +3,7 @@ import { Dungeon, RequiredItem, ReducerState, ItemsFromWebSocket } from './types
 
 export type AutoTrackingMode = 'disabled' | 'enabled'
 
-export type AppContext = {
+export type AppContextType = {
     state: ReducerState,
     actions: {
         toggleMap: (dungeon: Dungeon) => void,
@@ -24,9 +24,9 @@ export type AppContext = {
     setAutoTracking: (autoTracking: AutoTrackingMode) => void
 }
 
-export const AppContext = React.createContext<AppContext>(null as any)
+export const AppContext = React.createContext<AppContextType>(null as any)
 
-export type RequiredModalContext = {
+export type RequiredModalContextType = {
     dungeon?: Dungeon,
     required: Array<RequiredItem>,
     open: boolean,
@@ -34,4 +34,4 @@ export type RequiredModalContext = {
     handleClose: VoidFunction
 }
 
-export const RequiredModalContext = React.createContext<RequiredModalContext>(null as any)
+export const RequiredModalContext = React.createContext<RequiredModalContextType>(null as any)
