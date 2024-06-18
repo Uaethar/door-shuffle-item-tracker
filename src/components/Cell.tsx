@@ -17,6 +17,7 @@ const StyledCell = styled.div`
 type Props = {
     onLeftClick?: () => void,
     onRightClick?: () => void,
+    children?: React.ReactNode
 }
 
 const Cell: React.FC<Props> = ({ onLeftClick, onRightClick, children }) => {

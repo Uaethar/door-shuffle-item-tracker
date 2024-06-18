@@ -29,7 +29,7 @@ const Button = styled.button`
 
 const AutoTrackingToggle: React.FC = () => {
 
-    const [ws, setWs] = React.useState<WebSocket>()
+    const ws = React.useRef<WebSocket>()
     const [message, setMessage] = React.useState("Auto tracking disabled")
     const error = React.useRef("")
     const resetMessageTimeout = React.useRef<ReturnType<typeof setTimeout>>()
@@ -65,28 +65,35 @@ const AutoTrackingToggle: React.FC = () => {
         setOpenModal(false)
     }, [])
 
-    const sendMessage = React.useCallback((socket: WebSocket, message: any) => {
-        console.log('send message', message)
-        socket.send(JSON.stringify(message))
+    const sendMessage = React.useCallback((message: any) => {
+        if (ws.current) {
+            console.log('send message', message)
+            ws.current.send(JSON.stringify(message))
+        } else {
+            console.warn('message could not be sent (closed websocket): ', message)
+        }
     }, [])
 
-    const close = React.useCallback((socket?: WebSocket, errorMessage?: string) => {
+    const close = React.useCallback((errorMessage?: string) => {
+        const socket = ws.current
         if (socket && socket.readyState !== WebSocket.CLOSED) {
             if (errorMessage) {
                 error.current = errorMessage
             }
             socket.close()
+        } else {
+            console.log('websocket already closed')
         }
     }, [])
 
     const handleCancelDeviceSelection = React.useCallback(() => {
-        close(ws)
+        close()
         handleCloseModal()
-    }, [handleCloseModal, ws, close])
+    }, [handleCloseModal, close])
 
     const convertAndUpdateItems = React.useCallback((data: Int8Array) => {
         if (data.length !== 394) {
-            close(ws, 'Received invalid data\nClosing connection')
+            close('Received invalid data. Closing connection')
         } else {
             const updatedData = new ItemsFromWebSocket()
             DUNGEONS.forEach(dungeon => {
@@ -108,12 +115,12 @@ const AutoTrackingToggle: React.FC = () => {
             })
             setFromWebSocket(updatedData)
         }
-    }, [ws, setFromWebSocket, close])
+    }, [setFromWebSocket, close])
 
     React.useEffect(() => {
-        if (device && ws && ws.readyState !== WebSocket.CLOSED) {
+        if (device && ws?.current && ws.current.readyState !== WebSocket.CLOSED) {
             displayMessage(`Attaching to device\n${device}`)
-            sendMessage(ws, {
+            sendMessage({
                 Opcode: 'Attach',
                 Space: 'SNES',
                 Operands: [device]
@@ -127,13 +134,13 @@ const AutoTrackingToggle: React.FC = () => {
             setAutoTracking('enabled')
 
             // range: f5f000 ~ f5f500
-            getInfoInterval.current = setInterval(() => sendMessage(ws, {
+            getInfoInterval.current = setInterval(() => sendMessage({
                 Opcode: 'GetAddress',
                 Space: 'SNES',
                 Operands: ['f5f364', '18A']
             }), 1000)
 
-            ws.onmessage = message => {
+            ws.current.onmessage = message => {
                 const result = message.data as Blob
                 const fr = new FileReader()
                 fr.onloadend = () => {
@@ -154,18 +161,19 @@ const AutoTrackingToggle: React.FC = () => {
 
     const connect = React.useCallback(() => {
         const socket = new WebSocket('ws://localhost:23074')
+        ws.current = socket
         setConnecting(true)
 
         socket.onopen = () => {
             displayMessage('Connecting to SNI')
 
-            sendMessage(socket, {
+            sendMessage({
                 Opcode: 'DeviceList',
                 Space: 'SNES'
             })
             connectTimeout.current = setTimeout(() => {
                 setConnecting(false)
-                close(socket, 'Connection refused\nPlease ensure that SNI is running')
+                close('Connection refused\nPlease ensure that SNI is running')
             }, 5000)
         }
 
@@ -174,7 +182,6 @@ const AutoTrackingToggle: React.FC = () => {
                 console.log('message received', JSON.parse(message.data))
                 const result = JSON.parse(message.data)['Results']
                 displayMessage('Connection established')
-                setWs(socket)
                 if (connectTimeout.current) {
                     clearTimeout(connectTimeout.current)
                     connectTimeout.current = undefined
@@ -182,11 +189,11 @@ const AutoTrackingToggle: React.FC = () => {
                 if (result.length > 0) {
                     handleOpenModal(result)
                 } else {
-                    close(socket, 'No device detected\nClosing connection')
+                    close('No device detected\nClosing connection')
                 }
             } catch (e) {
                 console.error(`error while parsing message from SNI. message payload: ${message.data}`, e)
-                close(socket, 'Closing connection due to error')
+                close('Closing connection due to error')
             }
         }
 
@@ -211,7 +218,7 @@ const AutoTrackingToggle: React.FC = () => {
             error.current = ''
             setConnected(false)
             setConnecting(false)
-            setWs(undefined)
+            ws.current = undefined
             setDevice(undefined)
             setAutoTracking('disabled')
         }
@@ -227,7 +234,7 @@ const AutoTrackingToggle: React.FC = () => {
         <Button
             tabIndex={-1}
             disabled={connecting}
-            onClick={() => connected ? close(ws) : connect()}
+            onClick={() => connected ? close() : connect()}
         >
             {connected ? 'DISABLE' : 'ENABLE'}
         </Button>

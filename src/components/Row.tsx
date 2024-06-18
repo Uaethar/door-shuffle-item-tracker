@@ -7,11 +7,11 @@ import cross from '../img/cross.svg'
 import RequiredItemList from './RequiredItemList'
 import { styled } from 'styled-components'
 
-const Container = styled.div<{ stripped: boolean }>`
+const Container = styled.div<{ $stripped: boolean }>`
     display: flex;
     flex-direction: row;
     height: 24px;
-    background-color: ${props => props.stripped ? '#505050' : '#404040'};
+    background-color: ${props => props.$stripped ? '#505050' : '#404040'};
     &:hover {
         background-color: '#606060'
     }
@@ -20,7 +20,7 @@ const Container = styled.div<{ stripped: boolean }>`
     }
 `
 
-const CellGroup = styled.div<{ allFound?: boolean; allUsed?: boolean }>`
+const CellGroup = styled.div<{ $allFound?: boolean; $allUsed?: boolean }>`
     min-width: 24px;
     text-align: center;
     display: flex;
@@ -30,8 +30,8 @@ const CellGroup = styled.div<{ allFound?: boolean; allUsed?: boolean }>`
         border-right: 1px solid #fff;
     }
     background-color: ${props => {
-        if (props.allFound) return 'rgba(0, 200, 0, 0.25)'
-        if (props.allUsed) return 'rgba(200, 0, 0, 0.25)'
+        if (props.$allFound) return 'rgba(0, 200, 0, 0.25)'
+        if (props.$allUsed) return 'rgba(200, 0, 0, 0.25)'
         return undefined
     }}
 `
@@ -47,11 +47,11 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
     const { handleOpen } = React.useContext(RequiredModalContext)
 
 
-    return <Container stripped={stripped}>
+    return <Container $stripped={stripped}>
         <CellGroup>
             {dungeon}
         </CellGroup>
-        <CellGroup allFound={entrances.found === entrances.max}>
+        <CellGroup $allFound={entrances.found === entrances.max}>
             <Cell
                 onLeftClick={() => {
                     if (entrances.found < entrances.max) {
@@ -87,8 +87,8 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
             </Cell>
         </CellGroup>
         <CellGroup
-            allFound={smallKeys.found === smallKeys.total}
-            allUsed={smallKeys.total != null && smallKeys.current === 0}
+            $allFound={smallKeys.found === smallKeys.total}
+            $allUsed={smallKeys.total != null && smallKeys.current === 0}
         >
             <Cell
                 onLeftClick={() => {
@@ -116,7 +116,7 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
                 {smallKeys.current}
             </Cell>
         </CellGroup>
-        <CellGroup allFound={chests.found === chests.total}>
+        <CellGroup $allFound={chests.found === chests.total}>
             <Cell
                 onLeftClick={() => {
                     if (chests.total === null || chests.found < chests.total) {

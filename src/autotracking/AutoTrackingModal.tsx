@@ -61,8 +61,7 @@ const AutoTrackingModal: React.FC<Props> = ({ open, handleCancel, closeModal, co
 
     return <StyledModal
         isOpen={open}
-        ariaHideApp={false}
-        onAfterClose={() => setDevice(undefined)}
+        afterClose={() => setDevice(undefined)}
     >
         <Content>
             <h5>Select device:</h5>

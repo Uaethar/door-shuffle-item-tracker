@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react'
+import { styled } from 'styled-components'
+import Modal from 'styled-react-modal'
 import { AppContext, RequiredModalContext } from '../config/context'
 import { RequiredItem } from '../config/types'
-import ItemImage from './ItemImage'
 import check from '../img/check.svg'
 import cross from '../img/cross.svg'
-import Modal from 'styled-react-modal'
-import { styled } from 'styled-components'
+import ItemImage from './ItemImage'
 
 const StyledModal = Modal.styled`
     position: absolute;
@@ -50,7 +50,7 @@ const Button = styled.button`
     outline: none;
 `
 
-const Item = styled.button<{selected: boolean}>`
+const Item = styled.button<{ selected: boolean }>`
     display: flex;
     width: 34px;
     height: 34px;
@@ -108,10 +108,7 @@ const RequiredItemModal: React.FC = () => {
         selected: selectedItems.includes(item)
     }), [toggleItemSelected, selectedItems])
 
-    return <StyledModal
-        isOpen={open}
-        ariaHideApp={false}
-    >
+    return <StyledModal isOpen={open}>
         {dungeon && <>
             <Container>
                 <Row>
