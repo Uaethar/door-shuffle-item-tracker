@@ -1,25 +1,14 @@
 import React, { useCallback } from 'react'
 import { styled } from 'styled-components'
-import Modal from 'styled-react-modal'
 import { AppContext, RequiredModalContext } from '../config/context'
 import { RequiredItem } from '../config/types'
 import check from '../img/check.svg'
 import cross from '../img/cross.svg'
 import ItemImage from './ItemImage'
+import { Button } from '../styles/Button.styles'
+import { Modal, ModalActions } from '../styles/Modal.styles'
 
-const StyledModal = Modal.styled`
-    position: absolute;
-    top: 86px;
-    left: 66px;
-    width: 200px; 
-    background-color: #404040;
-    border: 1px solid #606060;
-    outline: none;
-    border-radius: 5px;
-    padding: 5px;
-`
-
-const Container = styled.div`
+const Content = styled.div`
     display: flex;
     flex-direction: column;
     font-size: 12px;
@@ -31,23 +20,6 @@ const Row = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: center;
-`
-
-const Actions = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    margin-top: 10px;
-`
-
-const Button = styled.button`
-    height: 26px;
-    margin: 2px;
-    padding: 3px;
-    cursor: pointer;
-    background-color: #606060;
-    color: #fff;
-    outline: none;
 `
 
 const Item = styled.button<{ selected: boolean }>`
@@ -65,13 +37,13 @@ const Item = styled.button<{ selected: boolean }>`
     background-color: ${props => props.selected ? 'rgba(111,249,221, 0.7)' : undefined}
 `
 
-type RequiredItemProps = {
+type ItemProps = {
     item: RequiredItem,
     selected: boolean,
     onClick: (item: RequiredItem) => void
 }
 
-const RequiredItemButton: React.FC<RequiredItemProps> = ({ item, selected, onClick }) => {
+const ItemButton: React.FC<ItemProps> = ({ item, selected, onClick }) => {
 
     const handleClick = useCallback(() => onClick(item), [onClick, item])
 
@@ -81,7 +53,7 @@ const RequiredItemButton: React.FC<RequiredItemProps> = ({ item, selected, onCli
 
 }
 
-const RequiredItemModal: React.FC = () => {
+const NotesModal: React.FC = () => {
 
     const { dungeon, required, open, handleClose } = React.useContext(RequiredModalContext)
     const { actions } = React.useContext(AppContext)
@@ -102,45 +74,45 @@ const RequiredItemModal: React.FC = () => {
         })
     }, [setSelectedItems])
 
-    const getButtonProps = useCallback((item: RequiredItem): RequiredItemProps => ({
+    const getButtonProps = useCallback((item: RequiredItem): ItemProps => ({
         item,
         onClick: toggleItemSelected,
         selected: selectedItems.includes(item)
     }), [toggleItemSelected, selectedItems])
 
-    return <StyledModal isOpen={open}>
+    return <Modal isOpen={open}>
         {dungeon && <>
-            <Container>
+            <Content>
                 <Row>
-                    <RequiredItemButton {...getButtonProps('sword')} />
-                    <RequiredItemButton {...getButtonProps('lantern')} />
-                    <RequiredItemButton {...getButtonProps('firerod')} />
-                    <RequiredItemButton {...getButtonProps('bombos')} />
-                    <RequiredItemButton {...getButtonProps('torch')} />
+                    <ItemButton {...getButtonProps('sword')} />
+                    <ItemButton {...getButtonProps('lantern')} />
+                    <ItemButton {...getButtonProps('firerod')} />
+                    <ItemButton {...getButtonProps('bombos')} />
+                    <ItemButton {...getButtonProps('torch')} />
                 </Row>
                 <Row>
-                    <RequiredItemButton {...getButtonProps('bombs')} />
-                    <RequiredItemButton {...getButtonProps('bow')} />
-                    <RequiredItemButton {...getButtonProps('hookshot')} />
-                    <RequiredItemButton {...getButtonProps('hammer')} />
-                    <RequiredItemButton {...getButtonProps('somaria')} />
+                    <ItemButton {...getButtonProps('bombs')} />
+                    <ItemButton {...getButtonProps('bow')} />
+                    <ItemButton {...getButtonProps('hookshot')} />
+                    <ItemButton {...getButtonProps('hammer')} />
+                    <ItemButton {...getButtonProps('somaria')} />
                 </Row>
                 <Row>
-                    <RequiredItemButton {...getButtonProps('glove')} />
-                    <RequiredItemButton {...getButtonProps('flippers')} />
-                    <RequiredItemButton {...getButtonProps('boots')} />
-                    <RequiredItemButton {...getButtonProps('bigKey')} />
-                    <RequiredItemButton {...getButtonProps('smallKey')} />
+                    <ItemButton {...getButtonProps('glove')} />
+                    <ItemButton {...getButtonProps('flippers')} />
+                    <ItemButton {...getButtonProps('boots')} />
+                    <ItemButton {...getButtonProps('bigKey')} />
+                    <ItemButton {...getButtonProps('smallKey')} />
                 </Row>
                 <Row>
-                    <RequiredItemButton {...getButtonProps('blueSwitch')} />
-                    <RequiredItemButton {...getButtonProps('redSwitch')} />
-                    <RequiredItemButton {...getButtonProps('dam')} />
-                    <RequiredItemButton {...getButtonProps('attic')} />
-                    <RequiredItemButton {...getButtonProps('other')} />
+                    <ItemButton {...getButtonProps('blueSwitch')} />
+                    <ItemButton {...getButtonProps('redSwitch')} />
+                    <ItemButton {...getButtonProps('dam')} />
+                    <ItemButton {...getButtonProps('attic')} />
+                    <ItemButton {...getButtonProps('other')} />
                 </Row>
-            </Container>
-            <Actions>
+            </Content>
+            <ModalActions>
                 <Button
                     tabIndex={-1}
                     onClick={() => setSelectedItems([])}
@@ -161,9 +133,9 @@ const RequiredItemModal: React.FC = () => {
                 >
                     <img src={check} alt="" width={16} />
                 </Button>
-            </Actions>
+            </ModalActions>
         </>}
-    </StyledModal>
+    </Modal>
 }
 
-export default RequiredItemModal
+export default NotesModal

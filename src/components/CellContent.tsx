@@ -1,8 +1,8 @@
 import React from 'react';
 import { styled } from 'styled-components'
 
-const StyledCell = styled.div`
-  width: 24px;
+const Content = styled.div`
+  width: 100%;
   font-size: 16px;
   height: 100%;
   display: flex;
@@ -20,9 +20,9 @@ type Props = {
     children?: React.ReactNode
 }
 
-const Cell: React.FC<Props> = ({ onLeftClick, onRightClick, children }) => {
+const CellContent: React.FC<Props> = ({ onLeftClick, onRightClick, children }) => {
 
-    return <StyledCell
+    return <Content
         onClick={onLeftClick}
         onContextMenu={(event) => {
             event.preventDefault()
@@ -30,7 +30,7 @@ const Cell: React.FC<Props> = ({ onLeftClick, onRightClick, children }) => {
         }}
     >
         {children}
-    </StyledCell>
+    </Content>
 }
 
-export default Cell
+export default CellContent

@@ -1,34 +1,18 @@
 import React from 'react'
+import { styled } from 'styled-components'
 import { AppContext, RequiredModalContext } from '../config/context'
 import { Dungeon } from '../config/types'
-import Cell from './Cell'
 import check from '../img/check.svg'
 import cross from '../img/cross.svg'
-import RequiredItemList from './RequiredItemList'
-import { styled } from 'styled-components'
+import CellContent from './CellContent'
+import Notes from './Notes'
+import { TableCell as BaseCell, TableRow } from '../styles/Table.styles'
 
-const Container = styled.div<{ $stripped: boolean }>`
-    display: flex;
-    flex-direction: row;
-    height: 24px;
-    background-color: ${props => props.$stripped ? '#505050' : '#404040'};
-    &:hover {
-        background-color: '#606060'
-    }
-    &:not(:last-child) {
-        border-bottom: 1px solid #fff
-    }
+const DungeonCell = styled(BaseCell)`
+    font-size: 12px;
 `
 
-const CellGroup = styled.div<{ $allFound?: boolean; $allUsed?: boolean }>`
-    min-width: 24px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    &:not(:last-child) {
-        border-right: 1px solid #fff;
-    }
+const TableCell = styled(BaseCell) <{ $allFound?: boolean; $allUsed?: boolean }>`
     background-color: ${props => {
         if (props.$allFound) return 'rgba(0, 200, 0, 0.25)'
         if (props.$allUsed) return 'rgba(200, 0, 0, 0.25)'
@@ -41,18 +25,18 @@ type Props = {
     stripped: boolean
 }
 
-const Row: React.FC<Props> = ({ dungeon, stripped }) => {
+const DungeonRow: React.FC<Props> = ({ dungeon }) => {
 
     const { state: { [dungeon]: { map, compass, bigKey, smallKeys, chests, entrances, required } }, actions, autoTracking } = React.useContext(AppContext)
     const { handleOpen } = React.useContext(RequiredModalContext)
 
 
-    return <Container $stripped={stripped}>
-        <CellGroup>
+    return <TableRow>
+        <DungeonCell $bt $br $bb>
             {dungeon}
-        </CellGroup>
-        <CellGroup $allFound={entrances.found === entrances.max}>
-            <Cell
+        </DungeonCell>
+        <TableCell $bt $bl $br $bb $allFound={entrances.found === entrances.max}>
+            <CellContent
                 onLeftClick={() => {
                     if (entrances.found < entrances.max) {
                         actions.addEntrance(dungeon)
@@ -61,36 +45,37 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
                 onRightClick={() => actions.removeEntrance(dungeon)}
             >
                 {entrances.found}
-            </Cell>
-        </CellGroup>
-        <CellGroup>
-            <Cell
+            </CellContent>
+        </TableCell>
+        <TableCell $bt $bl $br $bb>
+            <CellContent
                 onLeftClick={() => autoTracking === 'disabled' && actions.toggleMap(dungeon)}
             >
                 {map && <img src={check} alt="" width={16} />}
-            </Cell>
-        </CellGroup>
-        <CellGroup>
-            <Cell
+            </CellContent>
+        </TableCell>
+        <TableCell $bt $bl $br $bb>
+            <CellContent
                 onLeftClick={() => autoTracking === 'disabled' && actions.toggleCompass(dungeon)}
             >
                 {compass && <img src={check} alt="" width={16} />}
-            </Cell>
-        </CellGroup>
-        <CellGroup>
-            <Cell
+            </CellContent>
+        </TableCell>
+        <TableCell $bt $bl $br $bb>
+            <CellContent
                 onLeftClick={() => autoTracking === 'disabled' && actions.toggleBigKeyFound(dungeon)}
                 onRightClick={() => !(autoTracking !== 'disabled' && bigKey === 'found') && actions.toggleBigKeyUnaivalable(dungeon)}
             >
                 {bigKey === 'found' && <img src={check} alt="" width={16} />}
                 {bigKey === 'unavailable' && <img src={cross} alt="" width={16} />}
-            </Cell>
-        </CellGroup>
-        <CellGroup
+            </CellContent>
+        </TableCell>
+        <TableCell
             $allFound={smallKeys.found === smallKeys.total}
             $allUsed={smallKeys.total != null && smallKeys.current === 0}
+            $bt $bl $bb
         >
-            <Cell
+            <CellContent
                 onLeftClick={() => {
                     if (smallKeys.total === null || smallKeys.found < smallKeys.total) {
                         actions.addSmallKey(dungeon, 'found')
@@ -100,24 +85,36 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
                 onRightClick={() => actions.removeSmallKey(dungeon, 'found')}
             >
                 {smallKeys.found}
-            </Cell>
-            <Cell
+            </CellContent>
+        </TableCell>
+        <TableCell
+            $allFound={smallKeys.found === smallKeys.total}
+            $allUsed={smallKeys.total != null && smallKeys.current === 0}
+            $bt $bb
+        >
+            <CellContent
                 onLeftClick={() => actions.addSmallKey(dungeon, 'total')}
                 onRightClick={() => actions.removeSmallKey(dungeon, 'total')}
             >
                 {smallKeys.total !== null ? smallKeys.total : '?'}
-            </Cell>
-            <Cell
+            </CellContent>
+        </TableCell>
+        <TableCell
+            $allFound={smallKeys.found === smallKeys.total}
+            $allUsed={smallKeys.total != null && smallKeys.current === 0}
+            $bt $br $bb
+        >
+            <CellContent
                 onLeftClick={() => {
                     actions.addSmallKey(dungeon, 'current')
                 }}
                 onRightClick={() => actions.removeSmallKey(dungeon, 'current')}
             >
                 {smallKeys.current}
-            </Cell>
-        </CellGroup>
-        <CellGroup $allFound={chests.found === chests.total}>
-            <Cell
+            </CellContent>
+        </TableCell>
+        <TableCell $allFound={chests.found === chests.total} $bt $bl $bb>
+            <CellContent
                 onLeftClick={() => {
                     if (chests.total === null || chests.found < chests.total) {
                         actions.addChest(dungeon, 'found')
@@ -126,18 +123,20 @@ const Row: React.FC<Props> = ({ dungeon, stripped }) => {
                 onRightClick={() => actions.removeChest(dungeon, 'found')}
             >
                 {chests.found}
-            </Cell>
-            <Cell
+            </CellContent>
+        </TableCell>
+        <TableCell $allFound={chests.found === chests.total} $bt $br $bb>
+            <CellContent
                 onLeftClick={() => actions.addChest(dungeon, 'total')}
                 onRightClick={() => actions.removeChest(dungeon, 'total')}
             >
                 {chests.total !== null ? chests.total : '?'}
-            </Cell>
-        </CellGroup>
-        <CellGroup>
-            <RequiredItemList required={required} openRequiredModal={() => handleOpen(dungeon, required)} />
-        </CellGroup>
-    </Container>
+            </CellContent>
+        </TableCell>
+        <TableCell colspan={4} $bt $bl $bb>
+            <Notes notes={required} openNotesModal={() => handleOpen(dungeon, required)} />
+        </TableCell>
+    </TableRow>
 }
 
-export default Row
+export default DungeonRow

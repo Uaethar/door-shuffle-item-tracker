@@ -19,7 +19,7 @@ const Container = styled.div`
 const Item = styled.div`
     display: flex;
     width: 24px;
-    height: 24px;
+    height: 22px;
     justify-content: center;
     align-items: center;
     line-height: 10px;
@@ -31,27 +31,27 @@ const ItemEtc = styled(Item)`
 `
 
 type Props = {
-    required: Array<RequiredItem>,
-    openRequiredModal: VoidFunction
+    notes: Array<RequiredItem>,
+    openNotesModal: VoidFunction
 }
 
-const RequiredItemList: React.FC<Props> = ({ required, openRequiredModal }) => {
+const NotesList: React.FC<Props> = ({ notes, openNotesModal }) => {
 
-    const requiredCount = React.useMemo(() => required.length, [required])
+    const notesCount = React.useMemo(() => notes.length, [notes])
 
     return <Container
-        onClick={() => openRequiredModal()}
+        onClick={() => openNotesModal()}
         onContextMenu={(event) => event.preventDefault()}
     >
-        {(requiredCount <= 4 ? required : required.slice(0, 3)).map((item, index) =>
+        {(notesCount <= 4 ? notes : notes.slice(0, 3)).map((item, index) =>
             <Item key={index}>
                 <ItemImage item={item} />
             </Item>
         )}
-        {requiredCount > 4 && <ItemEtc>
+        {notesCount > 4 && <ItemEtc>
             ...
         </ItemEtc>}
     </Container>
 }
 
-export default RequiredItemList
+export default NotesList

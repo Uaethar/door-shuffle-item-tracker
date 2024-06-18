@@ -4,6 +4,7 @@ import { DUNGEONS, ItemsFromWebSocket } from '../config/types'
 import AutoTrackingModal from './AutoTrackingModal'
 import { getAddressOffsets, getItemForDungeon } from './utils'
 import { styled } from 'styled-components'
+import { Button } from '../styles/Button.styles'
 
 const Container = styled.div`
     display: flex;
@@ -15,16 +16,6 @@ const Container = styled.div`
 const Message = styled.div`
     margin-right: 5px;
     text-align: right;
-`
-
-const Button = styled.button`
-    height: 26px;
-    margin: 2px;
-    padding: 3px;
-    cursor: pointer;
-    background-color: #606060;
-    color: #fff;
-    outline: none;
 `
 
 const AutoTrackingToggle: React.FC = () => {

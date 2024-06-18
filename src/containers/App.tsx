@@ -1,13 +1,14 @@
 import React from 'react';
-import { Dungeon, DUNGEONS, RequiredItem } from '../config/types'
-import Header from '../components/Header'
-import reducer, { init } from '../config/reducer';
-import * as actions from '../config/actions'
-import { AppContext, AutoTrackingMode, RequiredModalContext } from '../config/context';
-import Row from '../components/Row';
-import RequiredItemModal from '../components/RequiredItemModal';
-import AutoTrackingToggle from '../autotracking/AutoTrackingToggle';
 import { styled } from 'styled-components';
+import AutoTrackingToggle from '../autotracking/AutoTrackingToggle';
+import Header from '../components/Header';
+import NotesModal from '../components/NotesModal';
+import DungeonRow from '../components/DungeonRow';
+import { Table } from '../styles/Table.styles';
+import * as actions from '../config/actions';
+import { AppContext, AutoTrackingMode, RequiredModalContext } from '../config/context';
+import reducer, { init } from '../config/reducer';
+import { DUNGEONS, Dungeon, RequiredItem } from '../config/types';
 
 
 const Container = styled.div`
@@ -43,7 +44,6 @@ const App: React.FC<{}> = () => {
   const [autoTracking, setAutoTracking] = React.useState<AutoTrackingMode>('disabled')
 
   return <Container>
-    <Header />
     <AppContext.Provider value={{
       state,
       actions: {
@@ -79,8 +79,13 @@ const App: React.FC<{}> = () => {
           setOpenModale(false)
         }
       }}>
-        {DUNGEONS.map((dungeon, index) => <Row key={index} dungeon={dungeon} stripped={index % 2 === 0} />)}
-        <RequiredItemModal />
+        <Table>
+          <Header />
+          <tbody>
+            {DUNGEONS.map((dungeon, index) => <DungeonRow key={index} dungeon={dungeon} stripped={index % 2 === 0} />)}
+          </tbody>
+        </Table>
+        <NotesModal />
         <AutoTrackingToggle />
       </RequiredModalContext.Provider>
     </AppContext.Provider>
